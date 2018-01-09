@@ -5,7 +5,7 @@ import VueRouter from 'vue-router';
 import Vuex from 'vuex';
 import VueAxios from 'vue-axios';
 
-import 'normalize.css/normalize.css';
+// import 'normalize.css/normalize.css';
 
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css'

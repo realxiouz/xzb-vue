@@ -15,13 +15,13 @@
                   <el-form-item label="确认密码：">
                       <el-input type="password"></el-input>
                   </el-form-item>
-                  <el-row>
-                      <el-col :span='12'>
+                  <el-row :gutter="10">
+                      <el-col :xl='12' :lg='12' :md='12' :sm='15' :xs='15'>
                           <el-form-item label="验证码：">
                             <el-input type="text" :maxlength="4"></el-input>
                           </el-form-item> 
                       </el-col>
-                      <el-col :span='12'><el-button ref="btnGetCode" @click="handleClickCode" :disabled="disabledBtn">获取验证码</el-button></el-col>
+                      <el-col :xl='12' :lg='12' :md='12' :sm='9' :xs='9'><el-button type="primary" @click="handleClickCode" :disabled="disabledBtn">获取验证码</el-button></el-col>
                   </el-row>
 
                   <el-form-item>
@@ -151,23 +151,20 @@ export default {
         this.$refs[formName].resetFields();
       },
       handleClickCode(e){
-          console.log(e.target.nodeName)
-        //   if(el.nodeName === 'span'){
-        //       el.innerText = `重新发送(${n}s)`;
-        //   }else{
-
-        //   }
           this.disabledBtn = !this.disabledBtn;
+          let span = null;
+          if( e.target.nodeName === "SPAN"){
+              span = e.target
+          }else{
+              span = e.target.children[0]
+          }
           let n = 9;
           let time = setInterval(() => {
               n--;
-              if(e.target.nodeName === 'SPAN'){
-                e.target.innerText = `重新发送(${n}s)`;
-              }
-            //   this.$refs['btnGetCode'].getElementsByTagName('span')[0].innerText = `重新发送(${n}s)`;
+              span.innerText = `重新发送(${n}s)`;
               if(n <= 0){
                   clearInterval(time);
-                  e.target.innerText = `获取验证码`;
+                  span.innerText = `获取验证码`;
                   this.disabledBtn = !this.disabledBtn;
               }
           },1000)

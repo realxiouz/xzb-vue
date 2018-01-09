@@ -26,6 +26,13 @@ module.exports = {
                 },
                 changeOrigin: true,
             },
+            // '/spgoc/': {
+            //     // target: 'http://192.168.2.114:8080',
+            //     target: 'http://localhost:8080',        
+            //     pathRewrite: {
+            //       '^/': ''
+            //     }
+            //   },
         },
 
         // Various Dev Server settings
