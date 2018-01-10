@@ -12,17 +12,16 @@ module.exports = {
         assetsPublicPath: '/',
         proxyTable: {
             '/api/': {
-                // target: 'http://localhost:63333',  // mock
-                target: 'http://192.168.1.105/api',
+                target: 'http://192.168.0.199',
                 pathRewrite: {
-                    '^/api': '',
+                    '^/': '',
                 },
                 changeOrigin: true,
             },
-            '/imgApi/': {
-                target: 'http://localhost:63333',  // mock
+            '/images/': {
+                target: 'http://192.168.0.199',
                 pathRewrite: {
-                    '^/imgApi': '',
+                    '^/': '',
                 },
                 changeOrigin: true,
             },

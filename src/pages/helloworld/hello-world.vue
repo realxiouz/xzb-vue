@@ -27,6 +27,7 @@
         <li ><icon-svg iconClass="weibo"></icon-svg></li>
     </ul>
     <img ref="checkCode" src="http://192.168.1.103/api/code" alt="img test">
+    <img ref="img" src="/images/icons/02.png" alt="img test2">
   </div>
 </template>
 
@@ -66,10 +67,11 @@ export default {
             password: '123',
             code: '1234'
         }
-        console.log(login)
-        login(p).then( res => console.log(res.data));
-        // axios.post('/api/login', p).then( res => console.log(res.data)).catch( err => console.log(err.data))
-        axios.get('/api/code').then( res => this.$refs.checkCode.src = res.data)
+        // console.log(login)
+        // login(p).then( res => console.log(res.data));
+        // // axios.post('/api/login', p).then( res => console.log(res.data)).catch( err => console.log(err.data))
+        axios.get('/api/code').then( res => this.$refs.checkCode.src = `data:image/png;base64,${res.data.data}`);
+        // axios.get('/images/icons/1.png').then( res => this.$refs.img.src = `data:image/png;base64,${res.data}`)
 
 
     },
