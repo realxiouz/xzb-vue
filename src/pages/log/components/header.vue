@@ -30,9 +30,26 @@ export default {
 <style lang="scss" scoped>
 .headerContainer{
     text-align: center;
-    padding-right: 10px;
+    padding: 0 10px;
+    line-height: 26px;
+    margin-bottom: 25px;
     div{
         float: right;
+        span{
+            color: #13BC98;
+            &:nth-child(1){
+                font-size: 18px;
+            }
+            &:nth-child(2){
+                color:#fff;
+                background-color: #13BC98;
+                padding:5px;
+                border-radius: 50%;
+                width:24px;
+                height:24px;
+                margin-left:6px;
+            }
+        }
     }
 }
 </style>

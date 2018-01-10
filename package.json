@@ -12,10 +12,11 @@
     "mock": "nodemon --watch ./mock build/mock-service.js"
   },
   "dependencies": {
-    "vue": "^2.5.2",
-    "vue-router": "^3.0.1",
     "axios": "^0.15.3",
+    "normalize.css": "^7.0.0",
+    "vue": "^2.5.2",
     "vue-axios": "^1.2.2",
+    "vue-router": "^3.0.1",
     "vuex": "^2.1.1"
   },
   "devDependencies": {

@@ -1,6 +1,45 @@
 <template>
   <div class="container">
       <el-row>
+          <el-col :xl='12' :lg='12' :md='12' :sm='24' style="padding-right:10px">
+              <el-form label-position="right" label-width="90px" :rules='registerRule' :model='registerForm' ref='regForm' status-icon>
+                  <el-form-item label="电话号码" prop="tel" v-if ="!isEmailReg">
+                      <el-input type="text" v-model="registerForm.tel" :maxlength="11"></el-input>
+                  </el-form-item>
+                  <el-form-item label="电子邮件" prop="email" v-else>
+                      <el-input type="text" v-model="registerForm.email" :maxlength="30"></el-input>
+                  </el-form-item>
+                  <div style="float: right"><span style="font-size:14px" ref="preText">没有手机?</span><el-button ref="btnText" type="text" @click="handleTelOrEmail">邮箱注册</el-button></div> <div style="clear:both;"></div>  
+                  <el-form-item label="用户名" prop="nickname">
+                      <el-input type="text" v-model="registerForm.nickname"></el-input>
+                  </el-form-item>
+                  <el-form-item label="密码" prop="pass">
+                      <el-input type="password" v-model="registerForm.pass"></el-input>
+                  </el-form-item>
+                  <el-form-item label="确认密码" prop="repass">
+                      <el-input type="password" v-model="registerForm.repass"></el-input>
+                  </el-form-item>
+                  <el-row :gutter="10" >
+                      <el-col :xl='12' :lg='12' :md='12' :sm='15' :xs='15'>
+                          <el-form-item label="验证码：" prop="code">
+                            <el-input type="text" :maxlength="4" v-model="registerForm.code"></el-input>
+                          </el-form-item> 
+                      </el-col>
+
+                      <el-col :xl='12' :lg='12' :md='12' :sm='9' :xs='9' v-if="!isEmailReg"><el-button type="primary" @click="handleClickCode" :disabled="disabledBtn">获取验证码</el-button></el-col>
+                      <el-col :xl='12' :lg='12' :md='12' :sm='9' :xs='9' v-else><img-code></img-code></el-col>
+                      
+                  </el-row>
+
+                  <el-form-item prop="readRule">
+                      <el-checkbox v-model="registerForm.readRule">我已阅读《新助邦会员注册协议》</el-checkbox>  
+                  </el-form-item>  
+                  <el-form-item>
+                    <el-button type="primary" @click="submitForm('regForm')">注册</el-button>
+                  </el-form-item>
+                  
+              </el-form>
+          </el-col>
           <el-col :xl='12' :lg='12' :md='12' :sm='24'>
                 <ul class='icon'>
                     <li ><icon-svg iconClass="qq"></icon-svg></li>
