@@ -1,10 +1,11 @@
 <template>
     <div class="headerContainer">
-        <span>{{title}}</span>
-        <div class="right">
+        <span style="font-weight: bold;font-size: large;">{{title}}</span>
+        <!-- 不是弹窗暂时去掉 -->
+        <!-- <div class="right">
             <span>{{subTitle}}</span>
             <span><icon-svg :iconClass="icon"></icon-svg></span>
-        </div>
+        </div> -->
     </div>
 </template>
 
@@ -33,6 +34,7 @@ export default {
     padding: 0 10px;
     line-height: 26px;
     margin-bottom: 25px;
+    cursor: pointer;
     div{
         float: right;
         span{

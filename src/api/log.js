@@ -2,16 +2,17 @@ import axios from 'axios'
 import qs from 'qs'
 import { Message } from 'element-ui'
 
+import store from '../vuex/store';
+
 const fetch = axios.create({
     // baseURL: '/spgoc/manage'
 })
 
-fetch.interceptors.request.use(config => {
-    // if (config.method === 'post' && config.url.indexOf('/addFile') === -1) {
-    //     config.data = qs.stringify(config.data)
-    // }
-    return config;
-})
+fetch.interceptors.request.use( config => Object.assign({}, config, {
+    headers: {
+        token: store.getters.token,
+    },
+}))
 
 fetch.interceptors.response.use( response => {
     return response;
@@ -28,13 +29,16 @@ fetch.interceptors.response.use( response => {
 
 // export default login = p => axios.post('api/login', p);
 // export default login = p => axios.post('api/login', p);
-export const login = p => axios.post('/api/login', p);
 export const telVal = p => fetch.get('/api/phoneValidate', {params: p});
 export const nameVal = p => fetch.get('/api/nicknameValidate', {params: p});
 export const emailVal = p => fetch.get('/api/emailValidate', {params: p});
 export const sendPhoneCode = p => fetch.get('api/sendPhoneCode', {params: p});
 export const register = p => fetch.post('/api/register', p);
 export const emailCode = () => fetch.get('/api/code');
+export const login = p => fetch.post('/api/login', p);
+export const logout = () => fetch.get('/api/logout')
+
+
 
 
 

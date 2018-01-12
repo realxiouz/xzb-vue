@@ -61,19 +61,6 @@ export default {
         // .catch((err) => {
         //     console.log(err);
         // });
-
-        let p={
-            name: 'test',
-            password: '123',
-            code: '1234'
-        }
-        // console.log(login)
-        // login(p).then( res => console.log(res.data));
-        // // axios.post('/api/login', p).then( res => console.log(res.data)).catch( err => console.log(err.data))
-        axios.get('/api/code').then( res => this.$refs.checkCode.src = `data:image/png;base64,${res.data.data}`);
-        // axios.get('/images/icons/1.png').then( res => this.$refs.img.src = `data:image/png;base64,${res.data}`)
-
-
     },
 };
 </script>

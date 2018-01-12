@@ -18,7 +18,7 @@ module.exports = {
                 },
                 changeOrigin: true,
             },
-            '/images/': {
+            '/Ucenter/': {
                 target: 'http://192.168.0.199',
                 pathRewrite: {
                     '^/': '',

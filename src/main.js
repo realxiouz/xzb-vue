@@ -30,11 +30,11 @@ const req = require.context('./icons', false, /\.svg$/);
 requireAll(req);
 
 // axios interceptors
-Vue.axios.interceptors.request.use(config => Object.assign({}, config, {
-    headers: {
-        token: store.getters.token,
-    },
-}));
+// Vue.axios.interceptors.request.use(config => Object.assign({}, config, {
+//     headers: {
+//         token: store.getters.token,
+//     },
+// }));
 
 Vue.axios.interceptors.response.use((res) => {
     if (res.status === 401) {
