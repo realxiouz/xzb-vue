@@ -3,7 +3,7 @@
         <div class="content">
             <div class="logo"><a href=""><img src="../../assets/logo.png" alt="logo"></a></div>
             <div class="nav">
-                <el-menu mode="horizontal">
+                <el-menu mode="horizontal" active-text-color="#13BC98">
                     <el-menu-item index="1">校友圈</el-menu-item>
                     <el-menu-item index="5">专业圈</el-menu-item>
                     <el-submenu index="2">

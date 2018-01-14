@@ -7,19 +7,21 @@
         </div>
         <el-form class="tabContainer" :rules='loginRule' :model='loginForm' ref='loginForm' status-icon>
             <el-form-item prop="name">
-                <el-input type='text' placeholder="电话/邮箱/用户名" v-model="loginForm.name" :maxlength="30">
-                    <icon-svg slot="prefix" iconClass="arrowleft"></icon-svg>
+                <el-input type='text' placeholder="电话/邮箱" v-model="loginForm.name" :maxlength="30">
+                    <icon-svg slot="prefix" iconClass="login"></icon-svg>
                 </el-input>
             </el-form-item>
             <el-form-item prop="password">
                 <el-input type='password' placeholder="请输入密码" v-model="loginForm.password">
-                    <icon-svg slot="prefix" iconClass="qq"></icon-svg>
+                    <icon-svg slot="prefix" iconClass="lock"></icon-svg>
                 </el-input>
             </el-form-item>
             <el-form-item prop="code">
                 <el-row :gutter='10'>
                     <el-col :span="12" >
-                        <el-input type='text' placeholder="请输入验证码" :maxlength="4" v-model="loginForm.code"></el-input>
+                        <el-input type='text' placeholder="请输入验证码" :maxlength="4" v-model="loginForm.code">
+                          <icon-svg slot="prefix" iconClass="checkcode"></icon-svg>
+                        </el-input>
                     </el-col>
                     <el-col :span="12">
                         <img-code style="width:100%;" ref="loginCode"></img-code> 
@@ -69,13 +71,15 @@
             <div v-if="!isEmailReg">
                 <el-form-item prop="tel">
                     <el-input type='text' placeholder="请输入手机号" v-model="registerForm.tel" :maxlength="11">
-                        <icon-svg slot="prefix" iconClass="arrowleft"></icon-svg>
+                        <icon-svg slot="prefix" iconClass="phone"></icon-svg>
                     </el-input>
                 </el-form-item>
                 <el-form-item prop="code">
                     <el-row :gutter='10'>
                         <el-col :span="12">
-                            <el-input type='text' placeholder="请输入验证码" :maxlength="4" v-model="registerForm.code"></el-input>
+                            <el-input type='text' placeholder="请输入验证码" :maxlength="4" v-model="registerForm.code">
+                              <icon-svg slot="prefix" iconClass="checkcode"></icon-svg>
+                            </el-input>
                         </el-col>
                         <el-col :span="12">
                             <el-button type="primary" style="width:100%;" @click="handleClickCode" :disabled="disabledBtn">获取验证码</el-button> 
@@ -86,13 +90,15 @@
             <div v-else>
                 <el-form-item prop="email">
                     <el-input type='text' placeholder="请输入电子邮件" v-model="registerForm.email" :maxlength="30">
-                        <icon-svg slot="prefix" iconClass="arrowleft"></icon-svg>
+                        <icon-svg slot="prefix" iconClass="email1"></icon-svg>
                     </el-input>
                 </el-form-item>
                 <el-form-item prop="code">
                     <el-row :gutter='10'>
                         <el-col :span="12" >
-                            <el-input type='text' placeholder="请输入验证码" :maxlength="4" v-model="registerForm.code"></el-input>
+                            <el-input type='text' placeholder="请输入验证码" :maxlength="4" v-model="registerForm.code">
+                              <icon-svg slot="prefix" iconClass="checkcode"></icon-svg>
+                            </el-input>
                         </el-col>
                         <el-col :span="12">
                             <img-code style="width:100%;" ref="regCode"></img-code> 
@@ -102,12 +108,12 @@
             </div>
             <el-form-item prop="pass">
                 <el-input type='password' placeholder="请输入密码（8-20位字符）" v-model="registerForm.pass">
-                    <icon-svg slot="prefix" iconClass="qq"></icon-svg>
+                    <icon-svg slot="prefix" iconClass="lock"></icon-svg>
                 </el-input>
             </el-form-item>
             <el-form-item prop="repass" >
                 <el-input type='password' placeholder="确认密码" v-model="registerForm.repass">
-                    <icon-svg slot="prefix" iconClass="qq"></icon-svg>
+                    <icon-svg slot="prefix" iconClass="pw"></icon-svg>
                 </el-input>
             </el-form-item>
             <div>

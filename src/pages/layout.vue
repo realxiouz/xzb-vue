@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <page-header></page-header>
+    <page-head></page-head>
     <banner style="margin-top:20px;"></banner>
     <router-view/>
     <page-foot></page-foot>
@@ -8,13 +8,13 @@
 </template>
 
 <script>
-import PageHeader from '@/pages/header/index';
+import PageHead from '@/pages/header/index';
 import PageFoot from '@/pages/footer';
 import Banner from '@/pages/bannerbar';
 export default {
     name: 'app',
     components:{
-      PageHeader,PageFoot,Banner
+      PageHead,PageFoot,Banner
     }
 };
 </script>
