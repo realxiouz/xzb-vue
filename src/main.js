@@ -12,14 +12,23 @@ import 'element-ui/lib/theme-chalk/index.css'
 import '../style/element-variables.scss'
 Vue.use(ElementUI)
 
+//vue-bootstrap
+import BootstrapVue from 'bootstrap-vue';
+import 'bootstrap/dist/css/bootstrap.css';
+import 'bootstrap-vue/dist/bootstrap-vue.css';
+Vue.use(BootstrapVue);
+
 import axios from './utilities/custom-axios';
 import router from './router';
-import store from './vuex/store';
+
+//import store from './vuex/store';
+import store from './store';
 import * as GlobalDirectives from './directives';
 
 import IconSvg from '@/components/svg-icon'
-
 Vue.component('icon-svg', IconSvg)
+
+
 
 Vue.use(VueRouter);
 Vue.use(Vuex);

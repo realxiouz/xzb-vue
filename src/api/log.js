@@ -1,16 +1,14 @@
 import axios from 'axios'
-import qs from 'qs'
 import { Message } from 'element-ui'
 
-import store from '../vuex/store';
-
+import store from "../store";
 const fetch = axios.create({
     // baseURL: '/spgoc/manage'
 })
 
 fetch.interceptors.request.use( config => Object.assign({}, config, {
     headers: {
-        token: store.getters.token,
+        token: store.state.token,
     },
 }))
 
@@ -36,7 +34,10 @@ export const sendPhoneCode = p => fetch.get('api/sendPhoneCode', {params: p});
 export const register = p => fetch.post('/api/register', p);
 export const emailCode = () => fetch.get('/api/code');
 export const login = p => fetch.post('/api/login', p);
-export const logout = () => fetch.get('/api/logout')
+export const logout = () => fetch.get('/api/logout');
+
+export const unreadmsg = () => fetch.get('/api/unmessages')
+export const shoppingCart = () => fetch.get('/api/cartnum')
 
 
 

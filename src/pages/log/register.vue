@@ -1,282 +1,77 @@
 <template>
-  <div class="container">      
-    <div class="login" style="width:300px;margin:30px auto;background-color: #fff;padding: 10px 0 30px;border-radius: 5px;border:1px solid #d8dee2;" v-if="isLogin === 1">
-        <div style="height:1px;"></div>
-        <div @click="dialogReg=true;dialogLogin=false">
-            <my-header subTitle="注册" title="登陆新助邦"></my-header>
-        </div>
-        <el-form class="tabContainer" :rules='loginRule' :model='loginForm' ref='loginForm' status-icon>
-            <el-form-item prop="name">
-                <el-input type='text' placeholder="电话/邮箱" v-model="loginForm.name" :maxlength="30">
-                    <icon-svg slot="prefix" iconClass="login"></icon-svg>
-                </el-input>
-            </el-form-item>
-            <el-form-item prop="password">
-                <el-input type='password' placeholder="请输入密码" v-model="loginForm.password">
-                    <icon-svg slot="prefix" iconClass="lock"></icon-svg>
-                </el-input>
-            </el-form-item>
-            <el-form-item prop="code">
-                <el-row :gutter='10'>
-                    <el-col :span="12" >
-                        <el-input type='text' placeholder="请输入验证码" :maxlength="4" v-model="loginForm.code">
-                          <icon-svg slot="prefix" iconClass="checkcode"></icon-svg>
-                        </el-input>
-                    </el-col>
-                    <el-col :span="12">
-                        <img-code style="width:100%;" ref="loginCode"></img-code> 
-                    </el-col>
-                </el-row>	  
-            </el-form-item>
-            <div>
-                <el-button type="primary" style="width:100%; margin-top:13px" @click="submitForm('loginForm')">登录</el-button>
-            </div>
-            <el-form-item style="margin-top:10px">
-                <el-row>
-                    <el-col :span="12" >
-                        <el-checkbox v-model="loginForm.readRule">记住密码</el-checkbox>
-                    </el-col>
-                    <el-col :span="12" >
-                        <el-button type="text" style="float:right">忘记密码</el-button>
-                    </el-col>
-                </el-row>  
-                    
-            </el-form-item>       
-        </el-form>
-        <ul class='icon'>
-            <li>
-                <icon-svg iconClass="wechat"></icon-svg>
-                <p>微信</p>
-            </li>
-            <li>
-                <icon-svg iconClass="qq"></icon-svg>
-                <p>QQ</p>
-            </li>
-            <li>
-                <icon-svg iconClass="weibo"></icon-svg>
-                <p>微博</p>
-            </li>
-        </ul>
-    </div>
-    <div class="login" style="width:300px;margin:30px auto;background-color: #fff;padding: 10px 0 30px;border-radius: 5px;border:1px solid #d8dee2;" v-else-if="isLogin === 2">
+  <div class="container">
+    <div class="login" style="width:300px;margin:30px auto;background-color: #fff;padding: 10px 0 30px;border-radius: 5px;border:1px solid #d8dee2;">
       <div>
-        <div @click="dialogLogin=true;dialogReg=false">
-            <my-header></my-header>
-        </div>              
+
+        <my-header></my-header>
+
         <ul class="tabNav">
-            <li><span :class="{active: !isEmailReg}" @click="isEmailReg=false">手机注册</span></li>
-            <li><span :class="{active: isEmailReg}" @click="isEmailReg=true">邮箱注册</span></li>
+          <li>
+            <span :class="{active: !isEmailReg}" @click="isEmailReg=false">手机注册</span>
+          </li>
+          <li>
+            <span :class="{active: isEmailReg}" @click="isEmailReg=true">邮箱注册</span>
+          </li>
         </ul>
         <el-form class="tabContainer" :rules='registerRule' :model='registerForm' ref='regForm' status-icon>
-            <div v-if="!isEmailReg">
-                <el-form-item prop="tel">
-                    <el-input type='text' placeholder="请输入手机号" v-model="registerForm.tel" :maxlength="11">
-                        <icon-svg slot="prefix" iconClass="phone"></icon-svg>
-                    </el-input>
-                </el-form-item>
-                <el-form-item prop="code">
-                    <el-row :gutter='10'>
-                        <el-col :span="12">
-                            <el-input type='text' placeholder="请输入验证码" :maxlength="4" v-model="registerForm.code">
-                              <icon-svg slot="prefix" iconClass="checkcode"></icon-svg>
-                            </el-input>
-                        </el-col>
-                        <el-col :span="12">
-                            <el-button type="primary" style="width:100%;" @click="handleClickCode" :disabled="disabledBtn">获取验证码</el-button> 
-                        </el-col>
-                    </el-row>	  
-                </el-form-item>
-            </div>
-            <div v-else>
-                <el-form-item prop="email">
-                    <el-input type='text' placeholder="请输入电子邮件" v-model="registerForm.email" :maxlength="30">
-                        <icon-svg slot="prefix" iconClass="email1"></icon-svg>
-                    </el-input>
-                </el-form-item>
-                <el-form-item prop="code">
-                    <el-row :gutter='10'>
-                        <el-col :span="12" >
-                            <el-input type='text' placeholder="请输入验证码" :maxlength="4" v-model="registerForm.code">
-                              <icon-svg slot="prefix" iconClass="checkcode"></icon-svg>
-                            </el-input>
-                        </el-col>
-                        <el-col :span="12">
-                            <img-code style="width:100%;" ref="regCode"></img-code> 
-                        </el-col>
-                    </el-row>	  
-                </el-form-item>
-            </div>
-            <el-form-item prop="pass">
-                <el-input type='password' placeholder="请输入密码（8-20位字符）" v-model="registerForm.pass">
-                    <icon-svg slot="prefix" iconClass="lock"></icon-svg>
-                </el-input>
+          <div v-if="!isEmailReg">
+            <el-form-item prop="tel">
+              <el-input type='text' placeholder="请输入手机号" v-model="registerForm.tel" :maxlength="11">
+                <icon-svg slot="prefix" iconClass="phone"></icon-svg>
+              </el-input>
             </el-form-item>
-            <el-form-item prop="repass" >
-                <el-input type='password' placeholder="确认密码" v-model="registerForm.repass">
-                    <icon-svg slot="prefix" iconClass="pw"></icon-svg>
-                </el-input>
+            <el-form-item prop="code">
+              <el-row :gutter='10'>
+                <el-col :span="12">
+                  <el-input type='text' placeholder="请输入验证码" :maxlength="4" v-model="registerForm.code">
+                    <icon-svg slot="prefix" iconClass="checkcode"></icon-svg>
+                  </el-input>
+                </el-col>
+                <el-col :span="12">
+                  <el-button type="primary" style="width:100%;" @click="handleClickCode" :disabled="disabledBtn">获取验证码</el-button>
+                </el-col>
+              </el-row>
             </el-form-item>
-            <div>
-                <el-button type="primary" style="width:100%; margin-top:13px" @click="submitForm('regForm')">注册</el-button>
-            </div>
-            <el-form-item prop="readRule">
-              <el-checkbox v-model="registerForm.readRule" style="padding-bottom:0px;">我已阅读《新助邦会员注册协议》</el-checkbox>  
-          </el-form-item>       
+          </div>
+          <div v-else>
+            <el-form-item prop="email">
+              <el-input type='text' placeholder="请输入电子邮件" v-model="registerForm.email" :maxlength="30">
+                <icon-svg slot="prefix" iconClass="email1"></icon-svg>
+              </el-input>
+            </el-form-item>
+            <el-form-item prop="code">
+              <el-row :gutter='10'>
+                <el-col :span="12">
+                  <el-input type='text' placeholder="请输入验证码" :maxlength="4" v-model="registerForm.code">
+                    <icon-svg slot="prefix" iconClass="checkcode"></icon-svg>
+                  </el-input>
+                </el-col>
+                <el-col :span="12">
+                  <img-code style="width:100%;" ref="regCode"></img-code>
+                </el-col>
+              </el-row>
+            </el-form-item>
+          </div>
+          <el-form-item prop="pass">
+            <el-input type='password' placeholder="请输入密码（8-20位字符）" v-model="registerForm.pass">
+              <icon-svg slot="prefix" iconClass="lock"></icon-svg>
+            </el-input>
+          </el-form-item>
+          <el-form-item prop="repass">
+            <el-input type='password' placeholder="确认密码" v-model="registerForm.repass">
+              <icon-svg slot="prefix" iconClass="pw"></icon-svg>
+            </el-input>
+          </el-form-item>
+          <div>
+            <el-button type="primary" style="width:100%; margin-top:13px" @click="submitForm('regForm')">注册</el-button>
+          </div>
+          <el-form-item prop="readRule">
+            <el-checkbox v-model="registerForm.readRule" style="padding-bottom:0px;">我已阅读《新助邦会员注册协议》</el-checkbox>
+          </el-form-item>
         </el-form>
       </div>
     </div>
     <div style="height:1px;"></div>
-    <el-dialog
-        :show-close="false"
-        :visible.sync="dialogReg"
-        width="300px"
-        >
-        <div>
-            <div @click="dialogLogin=true;dialogReg=false">
-                <my-header></my-header>
-            </div>              
-            <ul class="tabNav">
-                <li><span :class="{active: !isEmailReg}" @click="isEmailReg=false">手机注册</span></li>
-                <li><span :class="{active: isEmailReg}" @click="isEmailReg=true">邮箱注册</span></li>
-            </ul>
-            <el-form class="tabContainer" :rules='registerRule' :model='registerForm' ref='regForm' status-icon>
-                <div v-if="!isEmailReg">
-                    <el-form-item prop="tel">
-                        <el-input type='text' placeholder="请输入手机号" v-model="registerForm.tel" :maxlength="11">
-                            <icon-svg slot="prefix" iconClass="arrowleft"></icon-svg>
-                        </el-input>
-                    </el-form-item>
-                    <el-form-item prop="code">
-                        <el-row :gutter='10'>
-                            <el-col :span="12">
-                                <el-input type='text' placeholder="请输入验证码" :maxlength="4" v-model="registerForm.code"></el-input>
-                            </el-col>
-                            <el-col :span="12">
-                                <el-button type="primary" style="width:100%;" @click="handleClickCode" :disabled="disabledBtn">获取验证码</el-button> 
-                            </el-col>
-                        </el-row>	  
-                    </el-form-item>
-                </div>
-                <div v-else>
-                    <el-form-item prop="email">
-                        <el-input type='text' placeholder="请输入电子邮件" v-model="registerForm.email" :maxlength="30">
-                            <icon-svg slot="prefix" iconClass="arrowleft"></icon-svg>
-                        </el-input>
-                    </el-form-item>
-                    <el-form-item prop="code">
-                        <el-row :gutter='10'>
-                            <el-col :span="12" >
-                                <el-input type='text' placeholder="请输入验证码" :maxlength="4" v-model="registerForm.code"></el-input>
-                            </el-col>
-                            <el-col :span="12">
-                                <img-code style="width:100%;" ref="regCode"></img-code> 
-                            </el-col>
-                        </el-row>	  
-                    </el-form-item>
-                </div>
-                <el-form-item prop="pass">
-                    <el-input type='password' placeholder="请输入密码（8-20位字符）" v-model="registerForm.pass">
-                        <icon-svg slot="prefix" iconClass="qq"></icon-svg>
-                    </el-input>
-                </el-form-item>
-                <el-form-item prop="repass" >
-                    <el-input type='password' placeholder="确认密码" v-model="registerForm.repass">
-                        <icon-svg slot="prefix" iconClass="qq"></icon-svg>
-                    </el-input>
-                </el-form-item>
-                <div>
-                    <el-button type="primary" style="width:100%; margin-top:13px" @click="submitForm('regForm')">注册</el-button>
-                </div>
-                <el-form-item prop="readRule">
-                  <el-checkbox v-model="registerForm.readRule" style="padding-bottom:0px;">我已阅读《新助邦会员注册协议》</el-checkbox>  
-              </el-form-item>       
-            </el-form>
-        </div>
-    </el-dialog>
-    <!-- login -->
-    <el-dialog
-        :show-close="false"
-        :visible.sync="dialogLogin"
-        width="300px"
-        >
-        <div>
-            <div @click="dialogReg=true;dialogLogin=false">
-                <my-header subTitle="注册" title="登陆新助邦"></my-header>
-            </div>
-            <el-form class="tabContainer" :rules='loginRule' :model='loginForm' ref='loginForm' status-icon>
-                <el-form-item prop="name">
-                    <el-input type='text' placeholder="电话/邮箱/用户名" v-model="loginForm.name" :maxlength="30">
-                        <icon-svg slot="prefix" iconClass="arrowleft"></icon-svg>
-                    </el-input>
-                </el-form-item>
-                <el-form-item prop="password">
-                    <el-input type='password' placeholder="请输入密码" v-model="loginForm.password">
-                        <icon-svg slot="prefix" iconClass="qq"></icon-svg>
-                    </el-input>
-                </el-form-item>
-                <el-form-item prop="code">
-                    <el-row :gutter='10'>
-                        <el-col :span="12" >
-                            <el-input type='text' placeholder="请输入验证码" :maxlength="4" v-model="loginForm.code"></el-input>
-                        </el-col>
-                        <el-col :span="12">
-                            <img-code style="width:100%;" ref="loginCode"></img-code> 
-                        </el-col>
-                    </el-row>	  
-                </el-form-item>
-                <div>
-                    <el-button type="primary" style="width:100%; margin-top:13px" @click="submitForm('loginForm')">登录</el-button>
-                </div>
-                <el-form-item style="margin-top:10px">
-                    <el-row>
-                        <el-col :span="12" >
-                            <el-checkbox v-model="loginForm.readRule">记住密码</el-checkbox>
-                        </el-col>
-                        <el-col :span="12" >
-                            <el-button type="text" style="float:right">忘记密码</el-button>
-                        </el-col>
-                    </el-row>  
-                      
-              </el-form-item>       
-            </el-form>
-            <ul class='icon'>
-                <li>
-                    <icon-svg iconClass="wechat"></icon-svg>
-                    <p>微信</p>
-                </li>
-                <li>
-                    <icon-svg iconClass="qq"></icon-svg>
-                    <p>QQ</p>
-                </li>
-                <li>
-                    <icon-svg iconClass="weibo"></icon-svg>
-                    <p>微博</p>
-                </li>
-            </ul>
-        </div>
-    </el-dialog>
-    <!-- checkEmail -->
-
-    <el-dialog
-        :show-close="false"
-        :visible.sync="dialogCheckEmail"
-        width="300px"
-        >
-        <div class="checkEmail">
-            <div class="top"><span><icon-svg iconClass="email"></icon-svg></span></div>
-            <div class="welcome">{{nickname}}，欢迎来到新助邦！</div>
-            <div class="msg">注册确认信已发到你的邮箱，请登陆邮箱激活账号已完成验证</div>
-            <div class="btns"><el-button type="primary" round>查看邮件</el-button><el-button round>先去逛逛</el-button></div>
-            <div class="infor">
-                <div class="title">
-                    <span><icon-svg iconClass="infor"></icon-svg></span><span>没有收到确认信怎么办？</span>
-                </div>
-                <div class="content">检查Email地址是否正确，错了就重新<span>注册</span>一遍</div>
-                <div>看看是否在垃圾箱里</div>
-                <div class="content">稍等几分钟，若仍没有收到信，就<span>重发</span>一封吧！</div>
-            </div>   
-        </div>
-    </el-dialog>
   </div>
 </template>
 
@@ -413,7 +208,7 @@ export default {
       isEmailReg: false,
       dialogReg: false,
       dialogLogin: false,
-      dialogCheckEmail: false,
+      dialogCheckEmail: false
     };
   },
   methods: {
@@ -529,14 +324,14 @@ export default {
       });
     },
     // page跳转
-    successPage(){
+    successPage() {
       // console.log(this.$route.fullPath)
-      if( this.$route.fullPath.indexOf('?url') > 0){
-        console.log(this.$route.fullPath.split('?url')[1].substr(1))
-        window.location.href = this.$route.fullPath.split('?url')[1].substr(1)
+      if (this.$route.fullPath.indexOf("?url") > 0) {
+        console.log(this.$route.fullPath.split("?url")[1].substr(1));
+        window.location.href = this.$route.fullPath.split("?url")[1].substr(1);
       } else {
         // console.log('/index.php')
-        window.location.href = '/index.php'
+        window.location.href = "/index.php";
       }
     }
   },
@@ -648,7 +443,7 @@ export default {
       cursor: pointer;
       padding-bottom: 10px;
       &.active {
-        border-bottom: 3px solid $--color-primary;;
+        border-bottom: 3px solid $--color-primary;
       }
     }
   }

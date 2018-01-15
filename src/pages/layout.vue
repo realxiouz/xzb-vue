@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <page-head></page-head>
-    <banner style="margin-top:20px;"></banner>
+    <banner></banner>
     <router-view/>
     <page-foot></page-foot>
   </div>
