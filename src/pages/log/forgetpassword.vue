@@ -2,13 +2,13 @@
   <div class="container">
     <div class="login" style="width:300px;margin:30px auto;background-color: #fff;padding: 10px 0 30px;border-radius: 5px;border:1px solid #d8dee2;">
       <div>
-        <my-header></my-header>
+        <my-header :title="找回密码"></my-header>
         <ul class="tabNav">
           <li>
-            <span :class="{active: !isEmailReg}" @click="isEmailReg=false">手机注册</span>
+            <span :class="{active: !isEmailReg}" @click="isEmailReg=false">手机找回</span>
           </li>
           <li>
-            <span :class="{active: isEmailReg}" @click="isEmailReg=true">邮箱注册</span>
+            <span :class="{active: isEmailReg}" @click="isEmailReg=true">邮箱找回</span>
           </li>
         </ul>
         <el-form class="tabContainer" :rules='registerRule' :model='registerForm' ref='regForm' status-icon>
@@ -85,7 +85,7 @@ import {
 } from "@/api/log";
 import ImgCode from "@/components/img-code";
 import MyHeader from "./components/header";
-import { mapMutations } from "vuex";
+import { mapMutations, mapGetters } from "vuex";
 
 export default {
   data() {
@@ -124,6 +124,22 @@ export default {
           callback();
         } else {
           callback(new Error("电子邮件已经注册过了"));
+          return;
+        }
+      });
+    };
+
+    let validateNickName = (rule, value, callback) => {
+      if (value.trim() === "") {
+        callback(new Error("请输入昵称"));
+        return;
+      }
+      let p = { nickname: this.registerForm.nickname };
+      nameVal(p).then(res => {
+        if (res.data.success) {
+          callback();
+        } else {
+          callback(new Error("有人注册过该昵称了"));
           return;
         }
       });
@@ -174,6 +190,7 @@ export default {
       loginForm: { name: "", password: "", code: "" },
       registerRule: {
         tel: [{ validator: validateTel, trigger: "blur" }],
+        // nickname: [ { validator: validateNickName, trigger: 'blur' } ],
         email: [{ validator: validateEmail, trigger: "blur" }],
         pass: [{ validator: validatePass, trigger: "blur" }],
         repass: [{ validator: validateRepass, trigger: "blur" }],
@@ -193,6 +210,7 @@ export default {
     };
   },
   methods: {
+    ...mapMutations(["set_user_avatar", "set_user_nickname", "set_user_token"]),
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
@@ -223,6 +241,28 @@ export default {
                 }
               }
               this.resetForm("regForm");
+            });
+          } else if (formName === "loginForm") {
+            let p = {
+              name: this.loginForm.name,
+              password: this.loginForm.password,
+              code: this.loginForm.code
+            };
+
+            login(p).then(res => {
+              if (res.data.success) {
+                //
+                this.$message.success("登录成功");
+                this.dialogLogin = false;
+                this.set_user_avatar(res.data.data.avatar);
+                this.set_user_nickname(res.data.data.nickname);
+                this.set_user_token(res.data.data.token);
+                // this.successPage();
+              } else {
+                this.$message.error(res.data.message);
+                this.$refs.loginCode.changeImgCode();
+              }
+              this.resetForm("loginForm");
             });
           }
         } else {
@@ -269,12 +309,26 @@ export default {
         }
       }, 1000);
     },
+    handleLogout() {
+      logout().then(res => {
+        if (res.data.success) {
+          this.set_user_avatar("");
+          this.set_user_nickname("");
+          this.set_user_token("");
+          this.$message.success("已登出");
+        } else {
+          this.$message.error(res.data.message);
+        }
+      });
+    },
     // page跳转
     successPage() {
+      // console.log(this.$route.fullPath)
       if (this.$route.fullPath.indexOf("?url") > 0) {
         console.log(this.$route.fullPath.split("?url")[1].substr(1));
         window.location.href = this.$route.fullPath.split("?url")[1].substr(1);
       } else {
+        // console.log('/index.php')
         window.location.href = "/index.php";
       }
     }
@@ -301,6 +355,7 @@ export default {
     }
   },
   computed: {
+    ...mapGetters(["avatar", "nickname", "token", "isLogin"])
   }
 };
 </script>
