@@ -39,6 +39,17 @@ export const logout = () => fetch.get('/api/logout');
 export const unreadmsg = () => fetch.get('/api/unmessages')
 export const shoppingCart = () => fetch.get('/api/cartnum')
 
+//验证手机，用于修改密码
+export const verifyphone = p => fetch.get('/api/verifyphone',{params: p})
+export const changepwd = p => fetch.put('/api/changepwd', p)
+
+//直播相关
+//公共课
+export const publicsubs = () => fetch.get('/api/publicsubs' )
+//统考筛选
+export const unidieds = p => fetch.get('/api/unidieds',{params: p})
+//专业筛选
+export const schools = p => fetch.get('/api/schools',{params: p})
 
 
 

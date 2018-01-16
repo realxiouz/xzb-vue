@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <page-head></page-head>
-    <banner></banner>
+    <banner class="hidden-sm-and-down"></banner>
     <router-view/>
     <page-foot></page-foot>
   </div>
@@ -19,7 +19,8 @@ export default {
 };
 </script>
 
-<style>
+<style lang="scss">
+@import 'element-ui/lib/theme-chalk/display.css';
 #app {
     /* font-family: 'Avenir', Helvetica, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
@@ -28,5 +29,12 @@ export default {
     color: #2c3e50;
     margin-top: 60px; */
     background-color: #f9f9f9;
+    label {
+          margin-bottom: 0;
+    }
+    .el-form--label-top .el-form-item__label{
+      padding: 0px;
+    }
+
 }
 </style>

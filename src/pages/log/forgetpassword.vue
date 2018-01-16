@@ -2,17 +2,17 @@
   <div class="container">
     <div class="login" style="width:300px;margin:30px auto;background-color: #fff;padding: 10px 0 30px;border-radius: 5px;border:1px solid #d8dee2;">
       <div>
-        <my-header :title="找回密码"></my-header>
-        <ul class="tabNav">
+        <my-header title="找回密码"></my-header>
+        <ul class="tabNav" v-if="!showEdit">
           <li>
-            <span :class="{active: !isEmailReg}" @click="isEmailReg=false">手机找回</span>
+            <span :class="{active: !isEmail}" @click="isEmail=false">手机找回</span>
           </li>
           <li>
-            <span :class="{active: isEmailReg}" @click="isEmailReg=true">邮箱找回</span>
+            <span :class="{active: isEmail}" @click="isEmail=true">邮箱找回</span>
           </li>
         </ul>
-        <el-form class="tabContainer" :rules='registerRule' :model='registerForm' ref='regForm' status-icon>
-          <div v-if="!isEmailReg">
+        <el-form class="tabContainer" :rules='registerRule' :model='registerForm' ref='regForm' status-icon v-if="!showEdit">
+          <div v-if="!isEmail">
             <el-form-item prop="tel">
               <el-input type='text' placeholder="请输入手机号" v-model="registerForm.tel" :maxlength="11">
                 <icon-svg slot="prefix" iconClass="phone"></icon-svg>
@@ -50,22 +50,25 @@
               </el-row>
             </el-form-item>
           </div>
+
+          <div>
+            <el-button type="primary" style="width:100%; margin-top:13px" @click="submitForm('regForm')">提交</el-button>
+          </div>
+        </el-form>
+        <el-form class="tabContainer" v-else :model='resetPWForm'  :rules='resetPWRule' ref='resetPWForm' status-icon>
           <el-form-item prop="pass">
-            <el-input type='password' placeholder="请输入密码（8-20位字符）" v-model="registerForm.pass">
+            <el-input type='password' placeholder="请输入密码（8-20位字符）" v-model="resetPWForm.pass">
               <icon-svg slot="prefix" iconClass="lock"></icon-svg>
             </el-input>
           </el-form-item>
           <el-form-item prop="repass">
-            <el-input type='password' placeholder="确认密码" v-model="registerForm.repass">
+            <el-input type='password' placeholder="确认密码" v-model="resetPWForm.repass">
               <icon-svg slot="prefix" iconClass="pw"></icon-svg>
             </el-input>
           </el-form-item>
           <div>
-            <el-button type="primary" style="width:100%; margin-top:13px" @click="submitForm('regForm')">注册</el-button>
+            <el-button type="primary" style="width:100%; margin-top:13px" @click="submitForm('resetPWForm')">确认</el-button>
           </div>
-          <el-form-item prop="readRule">
-            <el-checkbox v-model="registerForm.readRule" style="padding-bottom:0px;">我已阅读《新助邦会员注册协议》</el-checkbox>
-          </el-form-item>
         </el-form>
       </div>
     </div>
@@ -79,13 +82,11 @@ import {
   emailVal,
   nameVal,
   sendPhoneCode,
-  register,
-  login,
-  logout
+  verifyphone,
+  changepwd
 } from "@/api/log";
 import ImgCode from "@/components/img-code";
 import MyHeader from "./components/header";
-import { mapMutations, mapGetters } from "vuex";
 
 export default {
   data() {
@@ -100,10 +101,10 @@ export default {
       }
       let p = { phone: this.registerForm.tel };
       telVal(p).then(res => {
-        if (res.data.success) {
+        if (!res.data.success) {
           callback();
         } else {
-          callback(new Error("手机号码已经注册过了"));
+          callback(new Error("手机号码还未注册"));
           return;
         }
       });
@@ -129,28 +130,12 @@ export default {
       });
     };
 
-    let validateNickName = (rule, value, callback) => {
-      if (value.trim() === "") {
-        callback(new Error("请输入昵称"));
-        return;
-      }
-      let p = { nickname: this.registerForm.nickname };
-      nameVal(p).then(res => {
-        if (res.data.success) {
-          callback();
-        } else {
-          callback(new Error("有人注册过该昵称了"));
-          return;
-        }
-      });
-    };
-
     let validatePass = (rule, value, callback) => {
       if (value === "") {
         callback(new Error("请输入密码"));
       } else {
-        if (this.registerForm.checkPass !== "") {
-          this.$refs.regForm.validateField("repass");
+        if (this.resetPWForm.checkPass !== "") {
+          this.$refs.resetPWForm.validateField("repass");
         }
         callback();
       }
@@ -159,7 +144,7 @@ export default {
     let validateRepass = (rule, value, callback) => {
       if (value === "") {
         callback(new Error("请再次输入密码"));
-      } else if (value !== this.registerForm.pass) {
+      } else if (value !== this.resetPWForm.pass) {
         callback(new Error("两次输入密码不一致!"));
       } else {
         callback();
@@ -172,68 +157,52 @@ export default {
         callback();
       }
     };
-    let validateReadRule = (rule, value, callback) => {
-      if (!value) {
-        callback(new Error("请勾选会员注册协议"));
-      }
-      callback();
-    };
     return {
       registerForm: {
         tel: "",
         email: "",
-        pass: "",
-        repass: "",
-        code: "",
-        readRule: false
+        code: ""
       },
-      loginForm: { name: "", password: "", code: "" },
       registerRule: {
         tel: [{ validator: validateTel, trigger: "blur" }],
-        // nickname: [ { validator: validateNickName, trigger: 'blur' } ],
         email: [{ validator: validateEmail, trigger: "blur" }],
+        code: [{ validator: validateCode, trigger: "blur" }]
+      },
+      resetPWForm: {
+        pass: "",
+        repass: ""
+      },
+      resetPWRule:{
         pass: [{ validator: validatePass, trigger: "blur" }],
         repass: [{ validator: validateRepass, trigger: "blur" }],
-        code: [{ validator: validateCode, trigger: "blur" }],
-        readRule: [{ validator: validateReadRule, trigger: "change" }]
-      },
-      loginRule: {
-        name: [{ required: true, message: "请输入电话/邮箱", trigger: "blur" }],
-        password: [{ required: true, message: "请输入密码", trigger: "blur" }],
-        code: [{ required: true, message: "请输入验证码", trigger: "blur" }]
       },
       disabledBtn: false,
-      isEmailReg: false,
-      dialogReg: false,
-      dialogLogin: false,
-      dialogCheckEmail: false
+      isEmail: false,
+      showEdit: false,
+      phone:'',
     };
   },
   methods: {
-    ...mapMutations(["set_user_avatar", "set_user_nickname", "set_user_token"]),
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
           if (formName === "regForm") {
             let p = null;
-            if (this.isEmailReg) {
+            if (this.isEmail) {
               p = {
                 email: this.registerForm.email,
-                code: this.registerForm.code,
-                password: this.registerForm.pass
+                code: this.registerForm.code
               };
             } else {
               p = {
                 phone: this.registerForm.tel,
-                code: this.registerForm.code,
-                password: this.registerForm.pass
+                code: this.registerForm.code
               };
             }
-            register(p).then(res => {
+            verifyphone(p).then(res => {
               if (res.data.success) {
-                //
-                this.$message.success("注册成功");
-                this.dialogReg = false;
+                this.showEdit = true;
+                this.phone = res.data.data.phone;
               } else {
                 this.$message.error(res.data.message);
                 if (this.$refs.regCode) {
@@ -242,28 +211,17 @@ export default {
               }
               this.resetForm("regForm");
             });
-          } else if (formName === "loginForm") {
+          } else if(formName === "resetPWForm") {
             let p = {
-              name: this.loginForm.name,
-              password: this.loginForm.password,
-              code: this.loginForm.code
+              phone: this.phone,
+              password: this.resetPWForm.pass,
             };
-
-            login(p).then(res => {
-              if (res.data.success) {
-                //
-                this.$message.success("登录成功");
-                this.dialogLogin = false;
-                this.set_user_avatar(res.data.data.avatar);
-                this.set_user_nickname(res.data.data.nickname);
-                this.set_user_token(res.data.data.token);
-                // this.successPage();
-              } else {
-                this.$message.error(res.data.message);
-                this.$refs.loginCode.changeImgCode();
+            changepwd(p).then( res => {
+              if(res.data.success){
+                this.$message.success("密码已重置,即将跳转登录界面");
+                setTimeout( () => this.$router.replace('login') ,1500)
               }
-              this.resetForm("loginForm");
-            });
+            })
           }
         } else {
           this.$message.error("信息不完整");
@@ -309,54 +267,17 @@ export default {
         }
       }, 1000);
     },
-    handleLogout() {
-      logout().then(res => {
-        if (res.data.success) {
-          this.set_user_avatar("");
-          this.set_user_nickname("");
-          this.set_user_token("");
-          this.$message.success("已登出");
-        } else {
-          this.$message.error(res.data.message);
-        }
-      });
-    },
-    // page跳转
-    successPage() {
-      // console.log(this.$route.fullPath)
-      if (this.$route.fullPath.indexOf("?url") > 0) {
-        console.log(this.$route.fullPath.split("?url")[1].substr(1));
-        window.location.href = this.$route.fullPath.split("?url")[1].substr(1);
-      } else {
-        // console.log('/index.php')
-        window.location.href = "/index.php";
-      }
-    }
   },
   components: {
     ImgCode,
     MyHeader
   },
   watch: {
-    isEmailReg() {
+    isEmail() {
       this.resetForm("regForm");
-    },
-    dialogReg() {
-      if (this.$refs.regForm) {
-        this.resetForm("regForm");
-      }
-      this.isEmailReg = false;
-    },
-    dialogLogin() {
-      if (this.$refs.loginForm) {
-        this.resetForm("loginForm");
-        this.$refs.loginCode.changeImgCode();
-      }
     }
   },
-  computed: {
-    ...mapGetters(["avatar", "nickname", "token", "isLogin"])
-  }
+  computed: {}
 };
 </script>
 
@@ -377,55 +298,6 @@ export default {
   max-width: 1200px;
   // background-color: #ccc;
   margin: 0 auto;
-}
-
-.icon {
-  text-align: center;
-  list-style: none;
-  margin: 0;
-  padding: 0px;
-  margin-bottom: 30px;
-  li {
-    text-align: center;
-    font-size: 30px;
-    color: #fff;
-    border: 1px solid #e1e1e1;
-    padding: 5px;
-    transition: all 0.3s;
-    height: 30px;
-    width: 30px;
-    border-radius: 50%;
-    display: inline-block;
-    cursor: pointer;
-    p {
-      font-size: 14px;
-      color: #e1e1e1;
-      margin-top: 8px;
-    }
-    &:nth-child(1) {
-      background-color: #6bbd52;
-    }
-    &:nth-child(2) {
-      background-color: #6bbbee;
-      margin: 0 30px;
-    }
-    &:nth-child(3) {
-      background-color: #f76b6d;
-    }
-
-    &:hover:nth-child(1) {
-      color: #6bbd52;
-      background-color: #fff;
-    }
-    &:hover:nth-child(2) {
-      color: #6bbbee;
-      background-color: #fff;
-    }
-    &:hover:nth-child(3) {
-      color: #f76b6d;
-      background-color: #fff;
-    }
-  }
 }
 
 .tabNav {
@@ -449,45 +321,6 @@ export default {
 .tabContainer {
   margin: 35px 0 25px 0;
   padding: 0 10px;
-}
-
-.checkEmail {
-  padding: 0 10px;
-  text-align: center;
-  .top {
-    span {
-      display: inline-block;
-      // padding: 8px;
-      font-size: 64px;
-      color: $--color-primary;
-    }
-  }
-  .welcome {
-    color: $--color-primary;
-    font-size: 20px;
-    margin: -20px 0 20px;
-  }
-  .btns {
-    margin: 35px 0;
-  }
-  .infor {
-    background-color: #ccc;
-    padding: 8px 8px 0;
-    text-align: left;
-    margin-bottom: 20px;
-    .title {
-      font-size: 20px;
-      span {
-        margin: 0 8px 0 0;
-      }
-    }
-    .content {
-      span {
-        color: $--color-primary;
-        cursor: pointer;
-      }
-    }
-  }
 }
 </style>
 

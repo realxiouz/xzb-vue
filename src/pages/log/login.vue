@@ -35,7 +35,7 @@
                         <el-checkbox v-model="loginForm.readRule">记住密码</el-checkbox>
                     </el-col>
                     <el-col :span="12" >
-                        <el-button type="text" style="float:right">忘记密码</el-button>
+                        <el-button type="text" style="float:right" @click="handleForgetPW">忘记密码</el-button>
                     </el-col>
                 </el-row>  
                     
@@ -463,6 +463,9 @@ export default {
         // console.log('/index.php')
         window.location.href = '/index.php'
       }
+    },
+    handleForgetPW(){
+      this.$router.push('forgetpassword');
     }
   },
   components: {

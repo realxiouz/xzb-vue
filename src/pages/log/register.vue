@@ -85,7 +85,6 @@ import {
 } from "@/api/log";
 import ImgCode from "@/components/img-code";
 import MyHeader from "./components/header";
-import { mapMutations } from "vuex";
 
 export default {
   data() {
@@ -171,7 +170,6 @@ export default {
         code: "",
         readRule: false
       },
-      loginForm: { name: "", password: "", code: "" },
       registerRule: {
         tel: [{ validator: validateTel, trigger: "blur" }],
         email: [{ validator: validateEmail, trigger: "blur" }],
@@ -180,16 +178,8 @@ export default {
         code: [{ validator: validateCode, trigger: "blur" }],
         readRule: [{ validator: validateReadRule, trigger: "change" }]
       },
-      loginRule: {
-        name: [{ required: true, message: "请输入电话/邮箱", trigger: "blur" }],
-        password: [{ required: true, message: "请输入密码", trigger: "blur" }],
-        code: [{ required: true, message: "请输入验证码", trigger: "blur" }]
-      },
       disabledBtn: false,
       isEmailReg: false,
-      dialogReg: false,
-      dialogLogin: false,
-      dialogCheckEmail: false
     };
   },
   methods: {
@@ -215,7 +205,7 @@ export default {
               if (res.data.success) {
                 //
                 this.$message.success("注册成功");
-                this.dialogReg = false;
+                // this.dialogReg = false;
               } else {
                 this.$message.error(res.data.message);
                 if (this.$refs.regCode) {
@@ -287,18 +277,6 @@ export default {
     isEmailReg() {
       this.resetForm("regForm");
     },
-    dialogReg() {
-      if (this.$refs.regForm) {
-        this.resetForm("regForm");
-      }
-      this.isEmailReg = false;
-    },
-    dialogLogin() {
-      if (this.$refs.loginForm) {
-        this.resetForm("loginForm");
-        this.$refs.loginCode.changeImgCode();
-      }
-    }
   },
   computed: {
   }
@@ -324,54 +302,6 @@ export default {
   margin: 0 auto;
 }
 
-.icon {
-  text-align: center;
-  list-style: none;
-  margin: 0;
-  padding: 0px;
-  margin-bottom: 30px;
-  li {
-    text-align: center;
-    font-size: 30px;
-    color: #fff;
-    border: 1px solid #e1e1e1;
-    padding: 5px;
-    transition: all 0.3s;
-    height: 30px;
-    width: 30px;
-    border-radius: 50%;
-    display: inline-block;
-    cursor: pointer;
-    p {
-      font-size: 14px;
-      color: #e1e1e1;
-      margin-top: 8px;
-    }
-    &:nth-child(1) {
-      background-color: #6bbd52;
-    }
-    &:nth-child(2) {
-      background-color: #6bbbee;
-      margin: 0 30px;
-    }
-    &:nth-child(3) {
-      background-color: #f76b6d;
-    }
-
-    &:hover:nth-child(1) {
-      color: #6bbd52;
-      background-color: #fff;
-    }
-    &:hover:nth-child(2) {
-      color: #6bbbee;
-      background-color: #fff;
-    }
-    &:hover:nth-child(3) {
-      color: #f76b6d;
-      background-color: #fff;
-    }
-  }
-}
 
 .tabNav {
   list-style: none;
@@ -396,44 +326,6 @@ export default {
   padding: 0 10px;
 }
 
-.checkEmail {
-  padding: 0 10px;
-  text-align: center;
-  .top {
-    span {
-      display: inline-block;
-      // padding: 8px;
-      font-size: 64px;
-      color: $--color-primary;
-    }
-  }
-  .welcome {
-    color: $--color-primary;
-    font-size: 20px;
-    margin: -20px 0 20px;
-  }
-  .btns {
-    margin: 35px 0;
-  }
-  .infor {
-    background-color: #ccc;
-    padding: 8px 8px 0;
-    text-align: left;
-    margin-bottom: 20px;
-    .title {
-      font-size: 20px;
-      span {
-        margin: 0 8px 0 0;
-      }
-    }
-    .content {
-      span {
-        color: $--color-primary;
-        cursor: pointer;
-      }
-    }
-  }
-}
 </style>
 
 
