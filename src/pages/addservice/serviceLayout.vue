@@ -8,18 +8,38 @@
                         <div class="type">
                             <div class="title">服务类别</div>
                             <el-row :gutter="10">
-                                <el-col :xs="12" :sm="6" :md="6" :lg="6" :xl="6">
-                                    <icon-button @click="currentIconBtn = 1" :isActive="firstActive"></icon-button>
-                                </el-col>
-                                <el-col :xs="12" :sm="6" :md="6" :lg="6" :xl="6">
-                                    <icon-button icon="answer" title="个性化辅导" subTitle="答疑或授课" @click="currentIconBtn = 2" :isActive="secActive"></icon-button>
-                                </el-col>
-                                <el-col :xs="12" :sm="6" :md="6" :lg="6" :xl="6">
-                                    <icon-button icon="focus" title="直播课" subTitle="公益或收费" @click="currentIconBtn = 3" :isActive="thirdActive"></icon-button>
-                                </el-col>
-                                <el-col :xs="12" :sm="6" :md="6" :lg="6" :xl="6">
-                                    <icon-button icon="package" title="打包课" subTitle="已发布的服务" @click="currentIconBtn = 4" :isActive="forthActive"></icon-button>
-                                </el-col>
+                                <div v-on:click="firstActive = true;
+        secActive = false;
+        thirdActive = false;
+        forthActive = false;">
+                                    <el-col :xs="12" :sm="6" :md="6" :lg="6" :xl="6">
+                                        <icon-button :isActive="firstActive"></icon-button>
+                                    </el-col>
+                                </div>
+                                <div v-on:click="firstActive = false;
+        secActive = true;
+        thirdActive = false;
+        forthActive = false;">
+                                    <el-col :xs="12" :sm="6" :md="6" :lg="6" :xl="6">
+                                        <icon-button icon="answer" title="个性化辅导" subTitle="答疑或授课" :isActive="secActive"></icon-button>
+                                    </el-col>
+                                </div>
+                                <div v-on:click="firstActive = false;
+        secActive = false;
+        thirdActive = true;
+        forthActive = false;">
+                                    <el-col :xs="12" :sm="6" :md="6" :lg="6" :xl="6">
+                                        <icon-button icon="focus" title="直播课" subTitle="公益或收费" :isActive="thirdActive"></icon-button>
+                                    </el-col>
+                                </div>
+                                <div v-on:click="firstActive = false;
+        secActive = false;
+        thirdActive = false;
+        forthActive = true;">
+                                    <el-col :xs="12" :sm="6" :md="6" :lg="6" :xl="6">
+                                        <icon-button icon="package" title="打包课" subTitle="已发布的服务" :isActive="forthActive"></icon-button>
+                                    </el-col>
+                                </div>
                             </el-row>
                         </div>
                         <div class="chooseMajor">
@@ -127,20 +147,41 @@ export default {
           ];
         }
       }, 300);
+    },
+    handleIconBtn(n) {
+      this.currentIconBtn = n;
     }
   },
-  wacth:{
-      currentIconBtn(val){
-          if(val == 1){
-              firstActive=true;secActive=false;thirdActive=false;forthActive=false;
-          } else if(val == 2){
-              firstActive=false;secActive=true;thirdActive=false;forthActive=false;
-          } else if(val == 3){
-                firstActive=false;secActive=false;thirdActive=true;forthActive=false;
-          } else if(val == 4){
-                firstActive=false;secActive=false;thirdActive=false;forthActive=true;
-          }
+  wacth: {
+    currentIconBtn(val) {
+      if (val == 1) {
+        this.firstActive = true;
+        this.secActive = false;
+        this.thirdActive = false;
+        this.forthActive = false;
+      } else if (val == 2) {
+        this.firstActive = false;
+        this.secActive = true;
+        this.thirdActive = false;
+        this.forthActive = false;
+      } else if (val == 3) {
+        console.log(val);
+        console.log(this.currentIconBtn);
+        this.firstActive = false;
+        this.secActive = false;
+        this.thirdActive = true;
+        this.forthActive = false;
+      } else if (val == 4) {
+        console.log(val);
+        console.log(this.currentIconBtn);
+        this.firstActive = false;
+        this.secActive = false;
+        this.thirdActive = false;
+        this.forthActive = true;
       }
+      console.log(val);
+      console.log(this.currentIconBtn);
+    }
   },
   mounted() {
     // let p = {
@@ -149,8 +190,8 @@ export default {
     // };
     // unidieds(p).then(res => console.log(res.data));
     let w = document.documentElement.offsetWidth || document.body.offsetWidth;
-    if(w < 400){
-        this.labPosition = 'top'
+    if (w < 400) {
+      this.labPosition = "top";
     }
     // let p1 = {
     //   pid: 1000000,
@@ -176,13 +217,13 @@ export default {
     padding: 10px;
 
     .type {
-        margin-bottom: 20px;
+      margin-bottom: 20px;
     }
     .chooseMajor {
-        margin-bottom: 20px;
+      margin-bottom: 20px;
     }
     .description {
-        margin-bottom: 20px;
+      margin-bottom: 20px;
     }
   }
 }
