@@ -32,7 +32,7 @@
                         </div>
                         <div class="chooseMajor">
                             <div class="title">确认专业</div>
-                            <choose-major></choose-major>
+                            <choose-major v-on:listenFromChild="getSelMajor"></choose-major>
                         </div>
                         <div class="description">
                             <div class="title">详细描述</div>
@@ -73,7 +73,7 @@
                                     </el-col>
                                 </el-form-item>
                                 <el-form-item label="上传讲义">
-                                    <el-upload class="upload-demo" action="https://jsonplaceholder.typicode.com/posts/">
+                                    <el-upload class="upload" action="https://jsonplaceholder.typicode.com/posts/">
                                         <el-button type="primary">点击上传</el-button>
                                         <div slot="tip" class="el-upload__tip">1.支持格式：压缩包,TXT, DOC, PPT, PDF, xls, 每份文档不超过50MB。<br> 2.请不要上传包含其他教育机构链接、logo、水印等广告，或带有色情、危害社会、无分享价值等类型的资料。
                                             <br> 3.资料名称、资料简介必须与资料内容一致，否则将不能通过审核。
@@ -82,7 +82,7 @@
                                     </el-upload>
                                 </el-form-item>
                                 <el-form-item label="上传封面">
-                                    <el-upload class="upload-demo" action="/api/uploadImage" :limit="1" :on-success="handleSuccess" :on-error="handleError" ref="imgUpload">
+                                    <el-upload class="upload" action="/api/uploadImage" :limit="1" :on-success="handleSuccess" :on-error="handleError" ref="imgUpload">
                                         <el-button type="primary">点击上传</el-button>
                                         <div slot="tip" class="el-upload__tip">1.支持格式：压缩包,TXT, DOC, PPT, PDF, xls, 每份文档不超过50MB.</div>
                                     </el-upload>
@@ -110,7 +110,7 @@
                                     </div>
                                 </el-form-item>
                                 <el-form-item>
-                                        <el-checkbox v-model="formSpread.checked3"> 委托新助邦免费招聘班主任</el-checkbox>
+                                    <el-checkbox v-model="formSpread.checked3"> 委托新助邦免费招聘班主任</el-checkbox>
                                 </el-form-item>
                                 <el-form-item>
                                     <div>
@@ -139,7 +139,7 @@ export default {
   data() {
     return {
       currentTab: "first",
-      form: { fee: 0 , title: '' , length: 0.5},
+      form: { fee: 0, title: "", length: 0.5 },
       labPosition: "right",
       currentIconBtn: 1,
       firstActive: true,
@@ -151,35 +151,39 @@ export default {
     };
   },
   components: {
-    IconButton,ChooseMajor
+    IconButton,
+    ChooseMajor
   },
   methods: {
     handleIconBtn(n) {
       this.currentIconBtn = n;
     },
-    handleCreateRoom(){
-        let p ={
-            open_class_time: this.form.time,
-            class_hour: this.form.length,
-            description: this.form.title,
-        }
-        createroom(p).then( res => console.log(res))
+    handleCreateRoom() {
+      let p = {
+        open_class_time: this.form.time,
+        class_hour: this.form.length,
+        description: this.form.title
+      };
+      createroom(p).then(res => console.log(res));
     },
-    handleSuccess(res, file, fl){
-        if(!res.success){
-            this.$refs.imgUpload.clearFiles();
-            this.$message.error(res.message.msg)
-        }
-        console.log("successs")
-        console.log(res)
-        console.log(file)
-        console.log(fl)
+    handleSuccess(res, file, fl) {
+      if (!res.success) {
+        this.$refs.imgUpload.clearFiles();
+        this.$message.error(res.message.msg);
+      }
+      console.log("successs");
+      console.log(res);
+      console.log(file);
+      console.log(fl);
     },
-    handleError(err, file, fl){
-         console.log("err")
-         console.log(err)
-        console.log(file)
-        console.log(fl)
+    handleError(err, file, fl) {
+      console.log("err");
+      console.log(err);
+      console.log(file);
+      console.log(fl);
+    },
+    getSelMajor() {
+      console.log(arguments);
     }
   },
   wacth: {
@@ -250,12 +254,17 @@ export default {
   }
 }
 
+.upload{
+    line-height: 16px;    
+}
+
+
 @media (max-width: 400px) {
-    .wrapper{
-        .rightPart{
-            padding: 10px;
-        }
+  .wrapper {
+    .rightPart {
+      padding: 10px;
     }
+  }
 }
 
 //标题样式
@@ -275,6 +284,14 @@ export default {
   width: 36px;
   text-align: center;
 }
+</style>
+
+<style>
+  .quill-editor:not(.bubble) .ql-container,
+  .quill-editor:not(.bubble) .ql-container .ql-editor {
+    height: 20rem;
+    padding-bottom: 1rem;
+  }
 </style>
 
 

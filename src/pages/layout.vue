@@ -40,6 +40,9 @@ export default {
     .el-form-item__content{
       // line-height: 14px;
     }
+    .el-message{
+      min-width: 280px;
+    }
 
 }
 </style>

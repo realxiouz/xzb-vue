@@ -1,13 +1,13 @@
 <template>
-    <div class="content" :class="{active: isActive}">
-        <div class="icon">
-            <icon-svg :iconClass="icon"></icon-svg>
-        </div>
-        <div class="right">
-            <div class="title">{{title}}</div>
-            <div class="subTitle">{{subTitle}}</div>
-        </div>
+  <div class="content" :class="{active: isActive}">
+    <div class="icon">
+      <icon-svg :iconClass="icon"></icon-svg>
     </div>
+    <div class="right">
+      <div class="title">{{title}}</div>
+      <div class="subTitle">{{subTitle}}</div>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -25,7 +25,7 @@ export default {
       type: String,
       default: "books"
     },
-    isActive:{
+    isActive: {
       type: Boolean,
       default: false
     }
@@ -40,22 +40,22 @@ export default {
   padding: 20px 10px;
   cursor: pointer;
   margin-bottom: 10px;
-  &:hover{
-    >.right{
+  &:hover {
+    > .right {
       color: $--color-primary;
     }
   }
-  &.active{
+  &.active {
     background-color: $--color-primary;
-    >.right{
-      .title{
+    > .right {
+      .title {
         color: #fff;
       }
-      .subTitle{
+      .subTitle {
         color: #fff;
       }
     }
-    >.icon{
+    > .icon {
       color: #fff;
     }
   }
@@ -66,9 +66,11 @@ export default {
     color: $--color-primary;
   }
   .right {
-    .title{
-        font-size: 16px;
-        font-weight: 500;
+    .title {
+      font-size: 16px;
+      font-weight: 500;
+      white-space: nowrap;
+      overflow: hidden;
     }
     .subTitle {
       white-space: nowrap;

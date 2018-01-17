@@ -24,17 +24,17 @@
                 </el-select>
             </el-form-item>
             <el-form-item label="专业">
-                <el-select v-model="form.selMajor" placeholder="请选择专业">
+                <el-select v-model="form.selMajor" placeholder="请选择专业" @change="sendSelMajor">
                     <el-option v-for="item in majors" :label="item.title" :value="item.id" :key="item.id"></el-option>
                 </el-select>
             </el-form-item>
         </template>
         <el-form-item label="专业分类" v-if="form.type == 2">
-            <el-cascader :options="options" :show-all-levels="false" v-model="selMajors">
+            <el-cascader :options="options" :show-all-levels="false" v-model="selMajors" @change="sendSelMajor">
             </el-cascader>
         </el-form-item>
         <el-form-item label="专业" v-if="form.type == 3">
-            <el-select v-model="form.selSub" placeholder="请选择专业">
+            <el-select v-model="form.selSub" placeholder="请选择专业" @change="sendSelMajor">
                 <el-option v-for="item in subs" :label="item.name" :value="item.id" :key="item.id"></el-option>
             </el-select>
         </el-form-item>
@@ -144,6 +144,9 @@ export default {
         this.majors = res;
         this.form.selMajor = "";
       });
+    },
+    sendSelMajor(val){
+      this.$emit("listenFromChild",val,this.form.type)
     }
   }
 };
