@@ -28,12 +28,17 @@ export default {
     text-align: center;
     color: #2c3e50;
     margin-top: 60px; */
-    background-color: #f9f9f9;
+    background-color: #f6f6f6;
     label {
           margin-bottom: 0;
     }
+
     .el-form--label-top .el-form-item__label{
       padding: 0px;
+    }
+    //上传slot高度限制
+    .el-form-item__content{
+      // line-height: 14px;
     }
 
 }
