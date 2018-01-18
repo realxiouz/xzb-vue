@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <page-head></page-head>
-    <banner class="hidden-sm-and-down"></banner>
+    <!-- <banner class="hidden-sm-and-down"></banner> -->
     <router-view/>
     <page-foot></page-foot>
   </div>

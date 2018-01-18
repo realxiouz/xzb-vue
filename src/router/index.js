@@ -9,6 +9,9 @@ import ForgetPW from '@/pages/log/forgetpassword';
 //添加服务
 import ServiceLO from '@/pages/addservice/serviceLayout';
 
+//直播详情
+import LivevideoDetail from '@/pages/livevideodetail/livevideodetail';
+
 Vue.use(Router);
 
 export default new Router({
@@ -39,6 +42,11 @@ export default new Router({
                 {
                     path: 'addservice',
                     component: ServiceLO
+                },
+                //直播详情
+                {
+                    path: 'livevideodetail',
+                    component: LivevideoDetail
                 }
             ],
         },

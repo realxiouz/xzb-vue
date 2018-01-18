@@ -579,7 +579,7 @@ export default {
       cursor: pointer;
       padding-bottom: 10px;
       &.active {
-        border-bottom: 3px solid $--color-primary;;
+        border-bottom: 3px solid $--color-primary;
       }
     }
   }

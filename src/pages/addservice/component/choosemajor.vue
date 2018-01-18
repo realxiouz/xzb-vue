@@ -25,12 +25,12 @@
             </el-form-item>
             <el-form-item label="专业">
                 <el-select v-model="form.selMajor" placeholder="请选择专业" @change="sendSelMajor">
-                    <el-option v-for="item in majors" :label="item.title" :value="item.id" :key="item.id"></el-option>
+                    <el-option v-for="item in majors" :label="item.title" :value="`${item.id}-${item.major_id}`" :key="item.id"></el-option>
                 </el-select>
             </el-form-item>
         </template>
         <el-form-item label="专业分类" v-if="form.type == 2">
-            <el-cascader :options="options" :show-all-levels="false" v-model="selMajors" @change="sendSelMajor">
+            <el-cascader :options="options" :show-all-levels="false" v-model="form.selMajors" @change="sendSelMajor">
             </el-cascader>
         </el-form-item>
         <el-form-item label="专业" v-if="form.type == 3">
@@ -63,7 +63,9 @@ export default {
       areas: [], //非统考 全部可选的地区
       colleges: [],//非统考 当前地区下的大学
       institutions: [],//非统考 当前大学下的学院
-      majors: [] //非统考 当前学院下的专业
+      majors: [], //非统考 当前学院下的专业,
+
+      schoolID:'' //保存schoolId
     };
   },
   props: {
@@ -123,6 +125,8 @@ export default {
       });
     },
     getInstitutions(pid) {
+      this.schoolID = pid;
+      console.log("schoolID is " + this.schoolID)
       let p = {
         pid,
         type: 2
@@ -146,7 +150,13 @@ export default {
       });
     },
     sendSelMajor(val){
-      this.$emit("listenFromChild",val,this.form.type)
+      if(this.form.type == 2){
+        val = val.length == 2 ? val[1] : val[0];
+      }
+      if(this.form.type == 1){
+        val = `${this.schoolID}-${val}`
+      }
+      this.$emit("listenFromChild",val,this.form.type);
     }
   }
 };

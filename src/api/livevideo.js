@@ -46,6 +46,10 @@ export const unidieds = p => fetch.get('/api/unidieds',{params: p})
 //专业筛选
 export const schools = p => fetch.get('/api/schools',{params: p})
 
+//直播详情
+export const lvdetail = p => fetch.get('/api/openclass/show',{params: p})
+
+
 
 
 
