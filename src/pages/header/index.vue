@@ -60,8 +60,8 @@
                 </b-navbar-nav>
                 <b-navbar-nav class="ml-auto">
                     <template v-if="!login">
-                        <b-nav-item href="/#/login">登录</b-nav-item>
-                        <b-nav-item href="/#/register">注册</b-nav-item>
+                        <b-nav-item href="#" @click="handleLogin">登录</b-nav-item>
+                        <b-nav-item href="#" @click="handleReg">注册</b-nav-item>
                     </template>
                     <template v-else>
                         <b-nav-item href="#" title="管理圈子">
@@ -114,7 +114,7 @@ export default {
     ...mapState(["login", "userInfo", "msgCount", "cartCount"])
   },
   methods: {
-    ...mapMutations(["OUT_LOGIN", "GET_MSG_COUNT"]),
+    ...mapMutations(["OUT_LOGIN", "GET_MSG_COUNT" , "SET_REG_DIALOG", "SET_LOG_DIALOG"]),
     handleLogout() {
       logout().then(res => {
         if (res.data.success) {
@@ -124,6 +124,12 @@ export default {
           this.$message.error(res.data.message);
         }
       });
+    },
+    handleLogin() {
+        this.SET_LOG_DIALOG(true);
+    },
+    handleReg(){
+        this.SET_REG_DIALOG(true);
     }
   }
 };

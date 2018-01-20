@@ -19,6 +19,7 @@
     "vue": "^2.5.2",
     "vue-axios": "^1.2.2",
     "vue-quill-editor": "^3.0.4",
+    "vue-quill-editor-upload": "^1.1.0",
     "vue-router": "^3.0.1",
     "vuex": "^2.1.1"
   },

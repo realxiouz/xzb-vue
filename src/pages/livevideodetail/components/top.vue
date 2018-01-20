@@ -11,7 +11,7 @@
         <el-col :xs="24" :sm="24" :md="14" :lg="14" :xl="14">
           <div class="info">
             <div class="title">
-              "detailBean.description"
+              {{detailBean.description}}
             </div>
             <el-row>
               <el-col :xs="24" :sm="24" :md="14" :lg="14" :xl="14">
@@ -31,7 +31,7 @@
             </el-row>
             <div class="action">
               <div class="btns">
-                <btns></btns>
+                <btns :me="detailBean.is_me"></btns>
               </div>
               <div class="price">{{`￥:${detailBean.price}`}}</div>
             </div>
@@ -52,10 +52,15 @@ export default {
       detailBean: {}
     };
   },
+  props: {
+    lvId: {
+      type: String,
+      required: true
+    }
+  },
   mounted() {
-    let p = { id: 5 };
+    let p = { id: this.lvId };
     lvdetail(p).then(res => {
-      console.log(res);
       this.detailBean = res;
     });
   },
@@ -103,13 +108,15 @@ export default {
       }
       .types {
         height: 48px;
+        font-size: 14px;
+        color: #999;
       }
       .time,
       .teacher {
         color: #ff7101;
-        font-size: 18px;
+        font-size: 16px;
         margin-bottom: 10px;
-        .price1{
+        .price1 {
           display: none;
         }
       }
@@ -138,14 +145,14 @@ export default {
       .img {
         margin-bottom: 10px;
         background-color: #fff;
-      }
+      }                   
       .info {
         background-color: #fff;
         padding: 10px;
         .teacher {
-          .price1{
+          .price1 {
             display: block;
-            float:right;
+            float: right;
           }
         }
         .action {

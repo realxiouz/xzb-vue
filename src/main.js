@@ -34,6 +34,7 @@ let toolbarOptions = [
     // [{ 'script': 'sub' }, { 'script': 'super' }], // superscript/subscript
     [{ 'indent': '-1' }, { 'indent': '+1' }], // outdent/indent
     [{ 'direction': 'rtl' }], // text direction
+    ['link', 'image'],
 
     // [{ 'size': ['small', false, 'large', 'huge'] }], // custom dropdown
     // [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
@@ -116,7 +117,19 @@ Object.keys(GlobalDirectives.default).forEach((name) => {
 /* eslint-disable no-new */
 new Vue({
     el: '#app',
+    name: "root",
     router,
     store,
-    template: '<router-view></router-view>',
+    template: '<router-view v-if="isRouterAlive"></router-view>',
+    data() {
+        return {
+            isRouterAlive: true
+        }
+    },
+    methods: {
+        reload() {
+            this.isRouterAlive = false;
+            this.$nextTick(() => (this.isRouterAlive = true));
+        }
+    }
 });

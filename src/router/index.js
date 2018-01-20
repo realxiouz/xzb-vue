@@ -10,46 +10,67 @@ import ForgetPW from '@/pages/log/forgetpassword';
 import ServiceLO from '@/pages/addservice/serviceLayout';
 
 //直播详情
-import LivevideoDetail from '@/pages/livevideodetail/livevideodetail';
+import Livevideo from '@/pages/livevideodetail/livevideo';
+import LVDetail from '@/pages/livevideodetail/components/detail';
+import LVChapter from '@/pages/livevideodetail/components/chapter';
+import LVBooks from '@/pages/livevideodetail/components/books';
+import LVPost from '@/pages/livevideodetail/components/post';
+
+//
 
 Vue.use(Router);
 
 export default new Router({
-    routes: [
-        {
-            path: '/',
-            redirect: 'login',
-            name: 'Layout',
-            component: Layout,
-            meta: {
-                requiresAuth: true,
-                keepAlive: false,
-            },
-            children: [
-                {
-                    path: 'login',
-                    component: Login
-                },
-                {
-                    path: 'register',
-                    component: Register
-                },
-                {
-                    path: 'forgetpassword',
-                    component: ForgetPW
-                },
-                //添加服务
-                {
-                    path: 'addservice',
-                    component: ServiceLO
-                },
-                //直播详情
-                {
-                    path: 'livevideodetail',
-                    component: LivevideoDetail
-                }
-            ],
+    routes: [{
+        path: '/',
+        redirect: 'login',
+        name: 'Layout',
+        component: Layout,
+        meta: {
+            requiresAuth: true,
+            keepAlive: false,
         },
-    ],
+        children: [{
+                path: 'login',
+                component: Login
+            },
+            {
+                path: 'register',
+                component: Register
+            },
+            {
+                path: 'forgetpassword',
+                component: ForgetPW
+            },
+            //添加服务
+            {
+                path: 'addservice',
+                component: ServiceLO
+            },
+            //直播详情
+            {
+                path: 'livevideo/:id',
+                component: Livevideo,
+                redirect: 'livevideo/:id/detail',
+                children: [{
+                        path: 'detail',
+                        component: LVDetail
+                    },
+                    {
+                        path: 'chapter',
+                        component: LVChapter
+                    },
+                    {
+                        path: 'books',
+                        component: LVBooks
+                    },
+                    {
+                        path: 'post',
+                        component: LVPost
+                    }
+                ]
+            }
+        ],
+    }, ],
     // mode: 'history',
 });

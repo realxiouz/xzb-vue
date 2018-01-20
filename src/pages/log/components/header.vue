@@ -14,7 +14,7 @@ export default {
     props:{
         title:{
             type: String,
-            default: '注册新助邦账号'
+            default: '注册新助邦'
         },
         subTitle:{
             type: String,

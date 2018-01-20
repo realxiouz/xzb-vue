@@ -19,15 +19,15 @@
       <template v-else>
         <li>报名</li>
         <li>
-          <icon-svg iconClass="wechat"></icon-svg>
+          <icon-svg iconClass="telephone"></icon-svg>
           <p>咨询</p>
         </li>
         <li>
-          <icon-svg iconClass="wechat"></icon-svg>
+          <icon-svg iconClass="question"></icon-svg>
           <p>提问</p>
         </li>
         <li>
-          <icon-svg iconClass="wechat"></icon-svg>
+          <icon-svg iconClass="push"></icon-svg>
           <p>推广</p>
         </li>
       </template>
@@ -39,8 +39,8 @@
 export default {
   props: {
     me: {
-      type: Boolean,
-      default: false
+      type: Number,
+      default: 0
     }
   }
 };

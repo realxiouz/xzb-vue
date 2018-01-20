@@ -61,7 +61,7 @@
                                         <el-input v-model="form.title" placeholder="输入标题(醒目的标题有助于吸引眼球,不超过16个字)" :maxlength="16"></el-input>
                                     </el-form-item>
                                     <el-form-item label="描述">
-                                        <quill-editor v-model="form.content" ref="myQuillEditor"></quill-editor>
+                                        <quill-editor v-model="form.content" ref="myQuillEditor" :options="editorOption"></quill-editor>
                                     </el-form-item>
                                     <el-form-item label="上课时间">
                                         <el-col :span="13">
@@ -144,7 +144,9 @@
                                 </el-form>
                             </div>
                         </el-tab-pane>
-                        <el-tab-pane label="公务员" name="second" disabled>公务员</el-tab-pane>
+                        <el-tab-pane label="公务员" name="second">
+                            <live-video></live-video>
+                        </el-tab-pane>
                     </el-tabs>
                 </el-col>
             </div>
@@ -155,10 +157,15 @@
 
 <script>
 import { createroom, liverelease } from "@/api/livevideo";
+import { quillRedefine } from "vue-quill-editor-upload";
 import IconButton from "./component/iconbutton";
 import ChooseMajor from "./component/choosemajor";
+import LiveVideo from "./component/livevideo";
+
+
 export default {
   data() {
+
     return {
       currentTab: "first",
       form: { fee: 0, title: "", length: 0.5 },
@@ -175,12 +182,14 @@ export default {
 
       liveId: "",
       attach: "",
-      imgUrl: ""
+      imgUrl: "",
+      editorOption: {}
     };
   },
   components: {
     IconButton,
-    ChooseMajor
+    ChooseMajor,
+    LiveVideo
   },
   methods: {
     handleIconBtn(n) {
@@ -295,6 +304,16 @@ export default {
     if (w < 400) {
       this.labPosition = "top";
     }
+  },
+  created() {
+    this.editorOption = quillRedefine({
+      uploadConfig: {
+        action: "/api/uploadImage",
+        res: respnse => {
+          return respnse.data.file.url;
+        }
+      }
+    });
   }
 };
 </script>
@@ -318,16 +337,16 @@ export default {
         padding: 15px 20px 15px;
         border-bottom: 2px solid #e4e7ed;
       }
-      .body{
-          .text{
-              line-height: 70px;
-              text-align: center;
-              border-left: 10px solid transparent;
-              &.active{
-                  border-color: #1ecca7;
-                  background-color: #F6FDFC;
-              }
+      .body {
+        .text {
+          line-height: 70px;
+          text-align: center;
+          border-left: 10px solid transparent;
+          &.active {
+            border-color: #1ecca7;
+            background-color: #f6fdfc;
           }
+        }
       }
     }
   }
