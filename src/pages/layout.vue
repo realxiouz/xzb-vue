@@ -4,7 +4,6 @@
     <!-- <banner class="hidden-sm-and-down"></banner> -->
     <router-view />
     <page-foot></page-foot>
-
     <dialogs></dialogs>
   </div>
 </template>

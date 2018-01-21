@@ -50,7 +50,8 @@
                                     </div>
                                 </el-row>
                             </div>
-                            <div class="chooseMajor">
+                            <live-video></live-video>
+                            <!-- <div class="chooseMajor">
                                 <div class="title">确认专业</div>
                                 <choose-major v-on:listenFromChild="getSelMajor"></choose-major>
                             </div>
@@ -72,7 +73,6 @@
                                             <el-input v-model.number="form.length" placeholder="时长">
                                                 <template slot="append">小时</template>
                                             </el-input>
-                                            <!-- <el-input-number v-model="form.length" controls-position="right" :min="0.5" :max="10" :controls="false"></el-input-number> -->
                                         </el-col>
                                     </el-form-item>
                                     <el-form-item label="主讲人">
@@ -142,10 +142,9 @@
                                         <el-button type="primary" @click="handleLiverelease">确认提交</el-button>
                                     </el-form-item>
                                 </el-form>
-                            </div>
+                            </div> -->
                         </el-tab-pane>
                         <el-tab-pane label="公务员" name="second">
-                            <live-video></live-video>
                         </el-tab-pane>
                     </el-tabs>
                 </el-col>

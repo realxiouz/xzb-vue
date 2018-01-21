@@ -1,19 +1,19 @@
 <template>
     <div class="share">
         <ul>
-            <li>
+            <li @click="handleLike">
                 <span class="icon">
                     <icon-svg iconClass="like"></icon-svg>
                 </span>
                 <span>{{likeNum}}</span>
             </li>
-            <li>
+            <li @click="handleCollect">
                 <span class="icon">
                     <icon-svg iconClass="collect"></icon-svg>
                 </span>
                 <span>{{collectNum}}</span>
             </li>
-            <li>
+            <li @click="handleShare">
                 <span class="icon">
                     <icon-svg iconClass="share"></icon-svg>
                 </span>
@@ -34,6 +34,18 @@ export default {
       type: String,
       default: "100"
     }
+  },
+  methods:{
+    handleLike(){
+      this.$message.error("like todo");
+    },
+    handleCollect(){
+      this.$message.error("collect todo");
+    },
+    handleShare(){
+      this.$message.error("sahre todo");
+    },
+
   }
 };
 </script>

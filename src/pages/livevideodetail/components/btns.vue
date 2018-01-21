@@ -2,31 +2,31 @@
   <div class="group">
     <ul>
       <template v-if="me">
-        <li>添加系列</li>
-        <li>
+        <li @click="handleTianjia">添加系列</li>
+        <li @click="handleBianJi">
           <icon-svg iconClass="wechat"></icon-svg>
-          <span>重新编辑</span>
+          <p>编辑</p>
         </li>
-        <li>
+        <li@click="handleXiaJia">
           <icon-svg iconClass="wechat"></icon-svg>
-          <span>下架</span>
+          <p>下架</p>
         </li>
-        <li>
+        <li @click="handleTuiGuan">
           <icon-svg iconClass="wechat"></icon-svg>
-          <span>设置推广</span>
+          <p>推广</p>
         </li>
       </template>
       <template v-else>
-        <li>报名</li>
-        <li>
+        <li @click="handle">报名</li>
+        <li @click="handleZhiXun">
           <icon-svg iconClass="telephone"></icon-svg>
           <p>咨询</p>
         </li>
-        <li>
+        <li @click="handleTiWen">
           <icon-svg iconClass="question"></icon-svg>
           <p>提问</p>
         </li>
-        <li>
+        <li @click="handleTuiGuan">
           <icon-svg iconClass="push"></icon-svg>
           <p>推广</p>
         </li>
@@ -41,8 +41,34 @@ export default {
     me: {
       type: Number,
       default: 0
+    },
+  },
+  methods:{
+      handle(){
+        this.$message.error("baoming todo");
+      },
+      handleZhiXun(){
+        this.$message.error("zhixun todo");
+      },
+      handleTiWen(){
+        this.$message.error("tiwen todo");
+      },
+      handleTuiGuan(){
+        this.$message.error("tuiguan todo");
+      },
+      handleTianjia(){
+        this.$message.error("Tianjia todo");
+      },
+      handleBianJi(){
+        this.$message.error("BianJi todo");
+      },
+      handleXiaJia(){
+        this.$message.error("XiaJia todo");
+      },
+      handleTuiGuan(){
+        this.$message.error("TuiGuang todo");
+      }
     }
-  }
 };
 </script>
 
@@ -55,10 +81,18 @@ export default {
     padding: 0;
     display: flex;
     li {
+      &:hover > p{
+        color:$--color-primary;
+      }
       height: 70px;
       text-align: center;
       cursor: pointer;
       padding: 0 25px;
+      > p{
+        color:#c1c1c1;
+        font-size: .8rem;
+        margin-top: -8px;
+      }
     }
     li:nth-child(1) {
       width: 144px;
@@ -71,32 +105,17 @@ export default {
       font-size: 2rem;
       border-right: 1px solid #dedede;
       color: #c1c1c1;
-      > p {
-        font-size: 1rem;
-        margin-top: -8px;
-        color: #000;
-      }
     }
     li:nth-child(3) {
       background-color: #eee;
       font-size: 2rem;
       border-right: 1px solid #dedede;
       color: #c1c1c1;
-      > p {
-        font-size: 1rem;
-        margin-top: -8px;
-        color: #000;
-      }
     }
     li:nth-child(4) {
       background-color: #eee;
       font-size: 2rem;
       color: #c1c1c1;
-      > p {
-        font-size: 1rem;
-        margin-top: -8px;
-        color: #000;
-      }
     }
   }
 }

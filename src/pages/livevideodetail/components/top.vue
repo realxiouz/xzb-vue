@@ -31,7 +31,7 @@
             </el-row>
             <div class="action">
               <div class="btns">
-                <btns :me="detailBean.is_me"></btns>
+                <btns :me="!detailBean.is_me"></btns>
               </div>
               <div class="price">{{`￥:${detailBean.price}`}}</div>
             </div>
