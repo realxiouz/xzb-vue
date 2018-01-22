@@ -1,14 +1,18 @@
 <template>
-    <div>{{bean}}
+    <div>
+      <div v-for="item in beans" :key="item.id" style="background-color:#fff">
+        <communicate :bindItem="item"></communicate> 
+      </div>
     </div>
 </template>
 
 <script>
 import { ocpost } from "@/api/livevideo";
+import  Communicate from "@/components/communicate-item";
 export default {
   data() {
     return {
-      bean: {}
+      beans: []
     };
   },
   mounted() {
@@ -18,8 +22,11 @@ export default {
       pagecount: 10
     };
     ocpost(p).then(res => {
-      this.bean = res;
+      this.beans = res.mps;
     });
+  },
+  components:{
+    Communicate
   }
 };
 </script>

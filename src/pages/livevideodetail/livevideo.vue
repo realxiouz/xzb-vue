@@ -10,7 +10,6 @@
                             <el-menu-item index="chapter">系列</el-menu-item>
                             <el-menu-item index="books">图书</el-menu-item>
                             <el-menu-item index="post">讨论区</el-menu-item>
-                            <el-menu-item index="5">买方评价</el-menu-item>
                         </el-menu>
                         <router-view></router-view>
                     </div>
@@ -55,8 +54,8 @@ export default {
   overflow-x: hidden; //移动端横向滚动条
   padding: 0;
   .tabs {
-    background-color: #fff;
-    min-height: 800px;
+    // background-color: #fff;
+    // min-height: 800px;
   }
   .side {
     //   background-color: #fff;

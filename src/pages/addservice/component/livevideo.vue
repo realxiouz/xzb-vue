@@ -288,7 +288,7 @@ export default {
       uploadConfig: {
         action: "/api/uploadImage",
         res: respnse => {
-          return respnse.data.file.url;
+          return respnse.data.img.url;
         }
       }
     });

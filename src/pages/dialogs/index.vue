@@ -139,7 +139,8 @@
 </template>
 
 <script>
-import { telVal, emailVal, sendPhoneCode, register, login } from "@/api/log";
+import { telVal, emailVal, sendPhoneCode, register, login, unreadmsg,
+  shoppingCart } from "@/api/log";
 import DialogHead from "@/pages/log/components/header";
 import ImgCode from "@/components/img-code";
 
@@ -256,7 +257,7 @@ export default {
     ImgCode
   },
   methods: {
-    ...mapMutations(["SET_REG_DIALOG", "SET_LOG_DIALOG"]),
+    ...mapMutations(["SET_REG_DIALOG", "SET_LOG_DIALOG", "RECORD_USERINFO", "SET_MSG_COUNT", "SET_CART_COUNT"]),
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
@@ -297,19 +298,25 @@ export default {
 
             login(p).then(res => {
               if (res.data.success) {
-                //
+                //记录用户信息
                 this.RECORD_USERINFO(res.data.data);
+                //读取未读信息
                 unreadmsg().then(res => {
                   if (res.data.success) {
                     this.SET_MSG_COUNT(res.data.data.count);
                   }
                 });
+                //读取购物车数量
                 shoppingCart().then(res => {
                   if (res.data.success) {
                     this.SET_CART_COUNT(res.data.data.count);
                   }
                 });
-                // this.successPage();
+                //刷新界面
+                this.$root.reload();
+                //关闭logdialog
+                this.handleCloseLog();
+                this.$message.success('登录成功');
               } else {
                 this.$message.error(res.data.message);
               }
@@ -366,20 +373,6 @@ export default {
     },
     handleCloseLog() {
       this.SET_LOG_DIALOG(false);
-      // console.log(this.$route.fullPath);
-      // this.$router.push(`${this.$route.fullPath}?t=${+new Date()}`)
-      // this.$router.go(0);\
-      // this.$router.go({
-      //   path: this.$router.path,
-      //   query: {
-      //     t: +new Date()
-      //   }
-      // });
-      this.$root.reload();
-    // console.log(this.$root.emit('reload'))
-    // this.$parent.emit('reload');
-    // console.log(this.$root.$children)
-    
     }
   },
   watch: {
