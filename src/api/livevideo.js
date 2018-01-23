@@ -76,3 +76,7 @@ export const ocpost = p => fetch.get('/api/openclass/post', { params: p })
 
 //直播附件下载
 export const ocdownloadattach = p => fetch.get('api/openclass/attachment', { params: p })
+
+
+//直播课列表
+export const oclist = p => fetch.get('/api/openclasslist', { params: p })

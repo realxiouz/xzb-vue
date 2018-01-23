@@ -21,11 +21,12 @@ export default {
     PageFoot,
     Banner,
     Dialogs
-  },
+  }
 };
 </script>
 
 <style lang="scss">
+@import "@/../style/element-variables";
 @import "element-ui/lib/theme-chalk/display.css";
 #app {
   background-color: #f6f6f6;
@@ -35,6 +36,15 @@ export default {
 
   .el-form--label-top .el-form-item__label {
     padding: 0px;
+  }
+}
+
+a {
+  color: #212529;
+
+  &:hover{
+    text-decoration: none;
+    color: $--color-primary;
   }
 }
 

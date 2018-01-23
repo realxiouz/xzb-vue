@@ -16,7 +16,9 @@ import LVChapter from '@/pages/livevideodetail/components/chapter';
 import LVBooks from '@/pages/livevideodetail/components/books';
 import LVPost from '@/pages/livevideodetail/components/post';
 
-//
+//list
+import List from '@/pages/list/listlayout';
+import ListLiveVideo from '@/pages/list/components/livevideo';
 
 Vue.use(Router);
 
@@ -51,6 +53,7 @@ export default new Router({
             {
                 path: 'livevideo/:id',
                 component: Livevideo,
+                name:'Livevideo',
                 redirect: 'livevideo/:id/detail',
                 children: [{
                         path: 'detail',
@@ -69,6 +72,14 @@ export default new Router({
                         component: LVPost
                     }
                 ]
+            },
+            {
+                path: 'list',
+                component: List,
+                children: [{
+                    path:'livevideo',
+                    component: ListLiveVideo
+                }]
             }
         ],
     }, ],

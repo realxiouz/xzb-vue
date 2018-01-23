@@ -13,11 +13,15 @@
                     </div>
                 </div>
                 <div class="act">
-                    <div class="money"></div>
-                    <!-- <el-select placeholder="请选择" size="tiny" value="1">
+                    <div class="money">
+                        <span v-if="bindItem.reward && !bindItem.answer">悬赏&nbsp;&nbsp;<span class="green">{{bindItem.reward}}元</span></span>
+                        <span v-if="bindItem.reward && bindItem.answer">已悬赏&nbsp;&nbsp;<span class="nogreen">{{bindItem.reward}}元</span></span>
+                        <!-- <el-select placeholder="请选择" size="mini" value="1">
                         <el-option label="删除" value="1">
                         </el-option>
                     </el-select> -->
+                    </div>
+                    
                 </div>
             </div>
             <div class="body">{{bindItem.content}}</div>
@@ -57,9 +61,9 @@
             </div>
         </div>
         <div class="row3" style="float:right">
-            <el-button type="primary" size="small" plain>{{`评论: ${bindItem.answerCount}`}}</el-button>
-            <el-button type="primary" size="small" plain>{{`转发: ${bindItem.answerCount}`}}</el-button>
-            <el-button type="primary" size="small" plain>{{`赞: ${bindItem.answerCount}`}}</el-button>
+            <el-button type="primary" size="small" plain>{{`评论: ${bindItem.comments_num}`}}</el-button>
+            <el-button type="primary" size="small" plain>{{`转发: ${bindItem.f_number}`}}</el-button>
+            <el-button type="primary" size="small" plain>{{`赞: ${bindItem.praise_num}`}}</el-button>
         </div>
         <div style="clear:both"></div>
     </div>
@@ -80,18 +84,29 @@ export default {
 @import "@/.././style/element-variables";
 .wrapper {
   padding: 20px 30px;
-  margin: 20px 0 0px 0;
+  margin: 0px 0 20px 0;
   .row1 {
     margin-bottom: 30px;
     .head {
       display: flex;
       margin-bottom: 15px;
-
       .nameAndCircle {
+          flex:auto;
         .circle {
           font-size: 0.8rem;
           color: #c1c1c1;
         }
+      }
+      .act{
+          .money{
+              font-size: 0.8rem;
+              .green{
+                  color:$--color-primary;
+              }
+              .nogreen{
+                  color:#FF9966;
+              }
+          }
       }
     }
     .body {
