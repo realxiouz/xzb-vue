@@ -3,7 +3,7 @@
         <el-row :gutter="30">
             <el-col :xs="24" :sm="24" :md="7" :lg="7" :xl="7">
                 <div class="img">
-                    <img :src="bean.image" alt="直播封面" class="bg" />
+                    <img :src="bean.image" alt="直播封面" class="bg" :onerror="errorImg"/>
                     <img src="../../.././assets/playbtn.png" alt="直播按钮" class="play" />
                 </div>
             </el-col>
@@ -66,6 +66,11 @@ export default {
   },
   components: {
     Share
+  },
+  data(){
+      return {
+          errorImg:'this.src="' + require('../../../assets/default.png') + '"',
+      }
   }
 };
 </script>

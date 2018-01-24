@@ -18,6 +18,11 @@ fetch.interceptors.response.use(response => {
         //响应成功直接读取data对象
         return response.data.data;
     } else if (response.data && !response.data.success) {
+        //需要权限直接去登陆
+        if (response.data.message === "token错误或失效") {
+            store.commit("SET_LOG_DIALOG", true);
+            return response.data;
+        }
         //响应失败提示错误信息
         Message({
             message: response.data.message,
@@ -80,3 +85,6 @@ export const ocdownloadattach = p => fetch.get('api/openclass/attachment', { par
 
 //直播课列表
 export const oclist = p => fetch.get('/api/openclasslist', { params: p })
+
+//进入直播间
+export const bjroom = p => fetch.get('/api/enterurl', { params: p })

@@ -43,7 +43,8 @@ export const shoppingCart = () => fetch.get('/api/cartnum')
 export const verifyphone = p => fetch.get('/api/verifyphone',{params: p})
 export const changepwd = p => fetch.put('/api/changepwd', p)
 
-//直播相关
+//api/userinfo
+export const userinfo = p => fetch.get('/api/userinfo', {params: p})
 
 
 

@@ -8,6 +8,10 @@ import Register from '@/pages/log/register';
 import ForgetPW from '@/pages/log/forgetpassword';
 //添加服务
 import ServiceLO from '@/pages/addservice/serviceLayout';
+import AddLiveVideo from "@/pages/addservice/component/livevideo"; //直播
+import AddTutor from "@/pages/addservice/component/tutor"; //辅导
+import AddReference from "@/pages/addservice/component/reference";// 资料
+import AddPackage from "@/pages/addservice/component/package"; //打包课
 
 //直播详情
 import Livevideo from '@/pages/livevideodetail/livevideo';
@@ -47,7 +51,28 @@ export default new Router({
             //添加服务
             {
                 path: 'addservice',
-                component: ServiceLO
+                component: ServiceLO,
+                redirect: 'addservice/reference',
+                children: [{
+                    path:'reference',
+                    name: "AddReference",
+                    component: AddReference
+                },{
+                    path:'tutor',
+                    name: "AddTutor",
+                    component: AddTutor
+                },
+                {
+                    path:'livevideo',
+                    name: "AddLiveVideo",
+                    component: AddLiveVideo
+                },
+                {
+                    path:'package',
+                    name: "AddPackage",
+                    component: AddPackage
+                }
+            ]
             },
             //直播详情
             {

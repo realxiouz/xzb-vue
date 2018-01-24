@@ -14,6 +14,9 @@ import PageFoot from "@/pages/footer";
 import Banner from "@/pages/bannerbar";
 import Dialogs from "@/pages/dialogs";
 
+import { userinfo, unreadmsg,
+  shoppingCart } from "@/api/log";
+import { mapMutations, mapState } from "vuex";
 export default {
   name: "app",
   components: {
@@ -21,6 +24,37 @@ export default {
     PageFoot,
     Banner,
     Dialogs
+  },
+  mounted() {
+    if (sessionStorage.getItem("token") && !this.login) {
+      let p = {
+        token: sessionStorage.getItem("token")
+      };
+      userinfo(p).then(res => {
+        if (res.data.success) {
+          this.RECORD_USERINFO(res.data.data);
+          unreadmsg().then(res => {
+            if (res.data.success) {
+              this.SET_MSG_COUNT(res.data.data.count);
+            }
+          });
+          //读取购物车数量
+          shoppingCart().then(res => {
+            if (res.data.success) {
+              this.SET_CART_COUNT(res.data.data.count);
+            }
+          });
+          //刷新界面
+          this.$root.reload();
+        }
+      });
+    }
+  },
+  computed:{
+    ...mapState(["login"]),
+  },
+  methods: {
+    ...mapMutations(["RECORD_USERINFO","SET_MSG_COUNT", "SET_CART_COUNT"])
   }
 };
 </script>
@@ -41,9 +75,8 @@ export default {
 
 a {
   color: #212529;
-
-  &:hover{
-    text-decoration: none;
+  text-decoration: none;
+  &:hover {
     color: $--color-primary;
   }
 }

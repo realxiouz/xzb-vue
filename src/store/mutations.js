@@ -19,6 +19,7 @@ export default {
         state.token = info.token;
         state.login = true;
         // setStore('user_id', info.user_id);
+        sessionStorage.setItem('token', info.token);
     },
     //获取用户信息存入vuex
     [GET_USERINFO](state, info) {

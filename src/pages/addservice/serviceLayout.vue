@@ -28,29 +28,30 @@
                             <div class="type">
                                 <div class="title">服务类别</div>
                                 <el-row :gutter="10">
-                                    <div v-on:click="firstActive = true;secActive = false;thirdActive = false;forthActive = false;">
+                                    <div v-on:click="currentIconBtn =1;$router.push({name:'AddReference'})">
                                         <el-col :xs="12" :sm="6" :md="6" :lg="6" :xl="6">
-                                            <icon-button :isActive="firstActive"></icon-button>
+                                            <icon-button :isActive="currentIconBtn == 1"></icon-button>
                                         </el-col>
                                     </div>
-                                    <div v-on:click="firstActive = false;secActive = true;thirdActive = false;forthActive = false;">
+                                    <div v-on:click="currentIconBtn =2;$router.push({name:'AddTutor'})">
                                         <el-col :xs="12" :sm="6" :md="6" :lg="6" :xl="6">
-                                            <icon-button icon="answer" title="个性化辅导" subTitle="答疑或授课" :isActive="secActive"></icon-button>
+                                            <icon-button icon="answer" title="个性化辅导" subTitle="答疑或授课" :isActive="currentIconBtn == 2"></icon-button>
                                         </el-col>
                                     </div>
-                                    <div v-on:click="firstActive = false;secActive = false;thirdActive = true;forthActive = false;">
+                                    <div v-on:click="currentIconBtn =3;$router.push({name:'AddLiveVideo'})">
                                         <el-col :xs="12" :sm="6" :md="6" :lg="6" :xl="6">
-                                            <icon-button icon="focus" title="直播课" subTitle="公益或收费" :isActive="thirdActive"></icon-button>
+                                            <icon-button icon="focus" title="直播课" subTitle="公益或收费" :isActive="currentIconBtn == 3"></icon-button>
                                         </el-col>
                                     </div>
-                                    <div v-on:click="firstActive = false;secActive = false;thirdActive = false;forthActive = true;">
+                                    <div v-on:click="currentIconBtn =4;$router.push({name:'AddPackage'})">
                                         <el-col :xs="12" :sm="6" :md="6" :lg="6" :xl="6">
-                                            <icon-button icon="package" title="打包课" subTitle="已发布的服务" :isActive="forthActive"></icon-button>
+                                            <icon-button icon="package" title="打包课" subTitle="已发布的服务" :isActive="currentIconBtn == 4"></icon-button>
                                         </el-col>
                                     </div>
                                 </el-row>
                             </div>
-                            <live-video></live-video>
+                            <router-view></router-view>
+                            <!-- <live-video></live-video> -->
                             <!-- <div class="chooseMajor">
                                 <div class="title">确认专业</div>
                                 <choose-major v-on:listenFromChild="getSelMajor"></choose-major>
@@ -159,7 +160,6 @@ import { createroom, liverelease } from "@/api/livevideo";
 import { quillRedefine } from "vue-quill-editor-upload";
 import IconButton from "./component/iconbutton";
 import ChooseMajor from "./component/choosemajor";
-import LiveVideo from "./component/livevideo";
 
 
 export default {
@@ -188,7 +188,6 @@ export default {
   components: {
     IconButton,
     ChooseMajor,
-    LiveVideo
   },
   methods: {
     handleIconBtn(n) {

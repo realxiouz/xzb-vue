@@ -7,13 +7,18 @@
                     <div class="content">
                         <div class="searchGroup">
                             <div class="search">
-                                <el-input placeholder="请输入准确的大学名称或学科专业名称">
-                                    <el-button slot="append" icon="el-icon-search"></el-button>
+                                <el-input placeholder="请输入准确的大学名称或学科专业名称" v-model="search">
+                                    <el-select slot="prepend" placeholder="请选择" v-model="sk1">
+                                        <el-option label="搜内容" value="0"></el-option>
+                                        <el-option label="搜昵称" value="1"></el-option>
+                                        <el-option label="搜大学" value="2"></el-option>
+                                    </el-select>
+                                    <el-button slot="append" icon="el-icon-search" @click="handleSearch"></el-button>
                                 </el-input>
                             </div>
                             <div class="group">
                                 <el-button type="primary">发需求</el-button>
-                                <el-button type="warning">发服务</el-button>
+                                <el-button type="warning" @click="$router.push('/addservice')">发服务</el-button>
                             </div>
 
                         </div>
@@ -38,15 +43,15 @@
                                     </li>
                                 </ul>
                             </div>
-                            <div class="searh1">
+                            <!-- <div class="searh1">
                                 <el-input placeholder="请输入内容" v-model="search1" size="small">
-                                    <el-select slot="prepend" placeholder="请选择" v-model="select" :value="1">
-                                        <el-option label="搜内容" value="1"></el-option>
-                                        <el-option label="搜昵称" value="2"></el-option>
+                                    <el-select slot="prepend" placeholder="请选择" v-model="sk">
+                                        <el-option label="搜内容" value="0"></el-option>
+                                        <el-option label="搜昵称" value="1"></el-option>
                                     </el-select>
                                     <el-button slot="append" icon="el-icon-search"></el-button>
                                 </el-input>
-                            </div>
+                            </div> -->
 
                         </div>
                         <div class="type">
@@ -69,11 +74,19 @@
                             </ul>
                         </div>
                         <div class="sort">
-                            <span>综合排序</span>
-                            <div class="time">日期</div>
-                            <div class="price">单价</div>
+                            <!-- <span style="padding:20px 0 20px 10px">综合排序</span> -->
+                            <div class="time">
+                                <span :class="{active : chooseTime}" @click="handleTimeSort">日期
+                                    <i :class="timeSort== 0? 'el-icon-arrow-down': 'el-icon-arrow-up'"></i>
+                                </span>
+                            </div>
+                            <div class="price">
+                                <span :class="{active : !chooseTime}" @click="handlePriceSort">单价
+                                    <i :class="priceSort== 0? 'el-icon-arrow-down': 'el-icon-arrow-up'"></i>
+                                </span>
+                            </div>
                         </div>
-                        <router-view :lvParams="{type: 1, mtype:2}"></router-view>
+                        <router-view :lvParams="{type, mtype, keywords, sk, sort}"></router-view>
                     </div>
                 </el-col>
                 <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
@@ -98,12 +111,55 @@ export default {
   },
   data() {
     return {
-      select: "",
+      search: "",
       search1: "",
 
+      priceSort: 0,
+      timeSort: 0,
+      chooseTime: true,
+
+      sk1: "",
+      sk: "",
+      keywords: "",
       type: 0, // 0:未开始 1:已结束
-      mtype: 0 // 0:全部 1:名师 2:机构
+      mtype: 0, // 0:全部 1:名师 2:机构
+      sort: ''
     };
+  },
+  methods: {
+    handleSearch() {
+      this.keywords = this.search;
+      this.sk = this.sk1;
+    },
+
+    handleTimeSort() {
+      this.timeSort = !this.timeSort;
+      if (!this.chooseTime) {
+        this.chooseTime = true;
+      }
+
+      if(this.chooseTime){
+          if(this.timeSort){
+              this.sort = 'dateup'
+          }else{
+              this.sort = 'datedown'
+          }
+      }
+    },
+    handlePriceSort() {
+      this.priceSort = !this.priceSort;
+      if (this.chooseTime) {
+        this.chooseTime = false;
+      }
+
+      if(!this.chooseTime){
+          if(this.priceSort){
+              this.sort = 'costup'
+          }else{
+              this.sort = 'costdown'
+          }
+      }
+    }
   }
 };
 </script>
@@ -122,6 +178,11 @@ export default {
       .search {
         flex: auto;
         margin-right: 20px;
+        .el-input {
+          .el-input-group__prepend {
+            width: 120px !important;
+          }
+        }
       }
       .group {
         min-width: 280px;
@@ -139,6 +200,14 @@ export default {
       display: flex;
       padding: 0px 10px 0px 0;
       justify-content: space-between;
+    //   .searh1 {
+    //     margin-top: 12px;
+    //     .el-input {
+    //       .el-input-group__prepend {
+    //         width: 100px !important;
+    //       }
+    //     }
+    //   }
     }
     .time,
     .type {
@@ -165,6 +234,19 @@ export default {
     .sort {
       display: flex;
       background-color: #fff;
+      font-size: 0.8rem;
+      .price,
+      .time {
+        padding: 20px;
+        > span {
+          cursor: pointer;
+          padding: 5px;
+          &.active {
+            background-color: $--color-primary;
+            color: #fff;
+          }
+        }
+      }
     }
   }
 }
@@ -175,5 +257,13 @@ export default {
   }
 }
 </style>
+
+<style>
+/* inputgroup 前缀不现实修复 */
+.el-input.el-input--suffix{
+    width: 100px !important;
+}
+</style>
+
 
 
