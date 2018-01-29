@@ -5,7 +5,7 @@
         <el-col :xs="24" :sm="24" :md="10" :lg="10" :xl="10">
           <div class="img">
             <img :src="detailBean.image" alt="直播封面" class="bg" :onerror="errorImg" />
-            <img src="../../.././assets/playbtn.png" alt="直播按钮" class="play" @click="handlePlay"/>
+            <img src="../../.././assets/playbtn.png" alt="直播按钮" class="play" @click="handlePlay" />
           </div>
         </el-col>
         <el-col :xs="24" :sm="24" :md="14" :lg="14" :xl="14">
@@ -31,7 +31,7 @@
             </el-row>
             <div class="action">
               <div class="btns">
-                <btns :me="detailBean.is_me"></btns>
+                <btns :bean="detailBean"></btns>
               </div>
               <div class="price">{{`￥:${detailBean.price}`}}</div>
             </div>
@@ -39,6 +39,15 @@
         </el-col>
       </el-row>
     </div>
+
+    <el-dialog :visible.sync="dialogDown" width="300px" center>
+      <div slot="title">建议下载客户端,观看更流畅!</div>
+      <!-- <span>这是一段信息</span> -->
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogDown = false">下载客户端</el-button>
+        <el-button type="primary" @click="dialogDown = false">网页版观看</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -47,13 +56,14 @@ import { lvdetail } from "@/api/livevideo";
 import Btns from "./btns";
 import Share from "./share";
 
-import {mapMutations, mapState} from 'vuex'; 
-import {bjroom} from "@/api/livevideo";
+import { mapMutations, mapState } from "vuex";
+import { bjroom } from "@/api/livevideo";
 export default {
   data() {
     return {
       detailBean: {},
-      errorImg: 'this.src="' + require("../../../assets/default.png") + '"'
+      errorImg: 'this.src="' + require("../../../assets/default.png") + '"',
+      dialogDown:true
     };
   },
   props: {
@@ -72,19 +82,26 @@ export default {
     Btns,
     Share
   },
-  methods:{
-    handlePlay(){
-      // if(!this.login){
-      //   this.$message.error("pls login first")
-      // }
-      let p= {id: this.lvId};
-      bjroom(p).then(  res =>{
-        console.log(res)
-      })
+  methods: {
+    handlePlay() {
+      let p = { id: this.lvId };
+      bjroom(p).then(res => {
+        if (res.type == 2) {
+          //回放
+          window.open(res.url);
+        } else if (res.type == 1) {
+          //直播
+          var url =
+            "baijiacloud://urlpath=" +
+            encodeURIComponent(res.url) +
+            "&token=token&ts=ts";
+          window.open(url);
+        }
+      });
     }
   },
-  computed:{
-    ...mapState(['login']),
+  computed: {
+    ...mapState(["login"])
   }
 };
 </script>

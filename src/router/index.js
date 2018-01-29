@@ -24,6 +24,15 @@ import LVPost from '@/pages/livevideodetail/components/post';
 import List from '@/pages/list/listlayout';
 import ListLiveVideo from '@/pages/list/components/livevideo';
 
+//个人中心
+import UserCenter from '@/pages/usercenter/uclayout';
+import Study from '@/pages/usercenter/components/study';
+import Teach from '@/pages/usercenter/components/study';
+
+//他人中心
+import OtherCenter from '@/pages/othercenter/oclayout';
+import OCLiveVideo from '@/pages/othercenter/components/livevideo';
+
 Vue.use(Router);
 
 export default new Router({
@@ -98,6 +107,7 @@ export default new Router({
                     }
                 ]
             },
+            //列表展示
             {
                 path: 'list',
                 component: List,
@@ -105,6 +115,40 @@ export default new Router({
                     path:'livevideo',
                     component: ListLiveVideo
                 }]
+            },
+            //个人中心
+            {
+                path: 'usercenter',
+                component: UserCenter,
+                children:[
+                    {
+                        component: Study,
+                        path: 'studying',
+                    },
+                    {
+                        component: Teach,
+                        path: 'teaching',
+                    }
+                ]
+
+            },
+            //他人中心
+            {
+                path: 'othercenter/:id',
+                component: OtherCenter,
+                name: 'OtherCenter',
+                redirect: 'othercenter/:id/livevideo',
+                children:[
+                    {
+                        component: OCLiveVideo,
+                        path: 'liveVideo',
+                    },
+                    // {
+                    //     component: Teach,
+                    //     path: 'teaching',
+                    // }
+                ]
+
             }
         ],
     }, ],

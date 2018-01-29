@@ -1,12 +1,14 @@
 <template>
   <div>
-    辅导todo..................................
+    <div class="chooseMajor">
+      <div class="title">确认专业</div>
+      <choose-major v-on:listenFromChild="getSelMajor"></choose-major>
+    </div>
   </div>
 </template>
 
 <script>
 import ChooseMajor from "./choosemajor";
-import { createroom, liverelease } from "@/api/livevideo";
 import { quillRedefine } from "vue-quill-editor-upload";
 export default {
   data() {
@@ -67,66 +69,6 @@ export default {
     ChooseMajor
   },
   methods: {
-    handleCreateRoom() {
-      if (this.liveId) {
-        this.$message.error("直播间已经创建");
-        return;
-      }
-      if (!this.majorObj) {
-        this.$message.error("请首先选择专业");
-        return;
-      }
-      this.$refs.form.validate(valid => {
-        if (!valid) {
-          this.$message.error("信息不完整");
-          return;
-        } else {
-          let p = {
-            open_class_time: this.form.time,
-            class_hour: this.form.length,
-            description: this.form.title
-          };
-          createroom(p).then(res => {
-            this.liveId = res.liveid;
-            this.$message.success(`直播间创建成功`);
-          });
-        }
-      });
-    },
-    handleLiverelease() {
-      if (!this.liveId) {
-        this.$message.error("直播间还未创建");
-        return;
-      }
-
-      if(!this.formSpread.checked4){
-         this.$message.error("勾选协议");
-          return;
-      }
-
-      let p = {
-        description: this.form.title,
-        price: this.form.fee == 0 ? 0 : this.form.feeCount,
-        open_class_time: this.form.time,
-        class_hour: this.form.length,
-        image: this.form.img,
-        teacher: this.form.teacher,
-        attach: this.attach,
-        live_id: this.liveId,
-        content_course: this.form.content,
-
-        is_extended: this.formSpread.checked1,
-        teacher_percent: this.formSpread.checked2 ? 0: this.formSpread.rate2,
-        is_adv: this.formSpread.checked3
-      };
-      liverelease(Object.assign({}, p, this.majorObj)).then(res => {
-        // console.log(res);
-        this.$message.success("直播发布成功.${res.data}");
-        this.$root.reload();
-        //
-        // location.href = `/home_openClass_subject.html?id=${res.data}&atype=0`;
-      });
-    },
 
     handleSuccessAttach(res, file, fl) {
       if (!res.success) {

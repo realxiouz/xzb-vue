@@ -42,7 +42,7 @@
         </div> -->
         <b-navbar toggleable="md" type="light" variant="light" class="content">
             <b-navbar-toggle target="nav_collapse"></b-navbar-toggle>
-            <b-navbar-brand href="#"><img src="../../assets/logo.png" alt="logo"></b-navbar-brand>
+            <b-navbar-brand href="/index.php"><img src="../../assets/logo.png" alt="logo"></b-navbar-brand>
             <b-collapse is-nav id="nav_collapse">
                 <b-navbar-nav>
                     <b-nav-item href="#">校友圈</b-nav-item>
@@ -50,7 +50,7 @@
                     <b-nav-item-dropdown text="服务" right>
                         <b-dropdown-item href="#">资料</b-dropdown-item>
                         <b-dropdown-item href="#">辅导</b-dropdown-item>
-                        <b-dropdown-item href="#">直播</b-dropdown-item>
+                        <b-dropdown-item href="#" @click="$router.push('/list/livevideo')">直播</b-dropdown-item>
                     </b-nav-item-dropdown>
                     <b-nav-item-dropdown text="需求" right>
                         <b-dropdown-item href="#">资料</b-dropdown-item>
@@ -88,7 +88,7 @@
                             <template slot="button-content">
                                 <img :src="userInfo.avatar" alt="avatar" class="avatar" />{{userInfo.nickname}}
                             </template>
-                            <b-dropdown-item href="#" disabled>
+                            <b-dropdown-item href="#" @click="$router.push('/usercenter/studying')">
                                 <icon-svg iconClass="home"></icon-svg>&nbsp;&nbsp;个人中心</b-dropdown-item>
                             <b-dropdown-item href="#" disabled>
                                 <icon-svg iconClass="setting"></icon-svg>&nbsp;&nbsp;基本设置</b-dropdown-item>
@@ -119,6 +119,7 @@ export default {
       logout().then(res => {
         if (res.data.success) {
           this.OUT_LOGIN();
+          this.$root.reload();
           this.$message.success("已登出");
         } else {
           this.$message.error(res.data.message);

@@ -6,7 +6,7 @@
         <div class="body">
             <div class="publisher" v-if="panelType === 1">
                 <div class="user">
-                    <div class="img">
+                    <div class="img" @click="$router.push({ name:'OtherCenter', params:{id : publishBean.id}})">
                         <img :src="publishBean.avatar" alt="publisheravatar">
                     </div>
                     <div class="info">
@@ -37,13 +37,13 @@
                     {{teacherBean.identify_description ? teacherBean.identify_description : "该讲师暂无简介"}}
                 </div>
                 <div class="action">
-                    <el-button>老师主页>></el-button>
+                    <el-button @click="$router.push({ name:'OtherCenter', params:{id : teacherBean.id}})">老师主页>></el-button>
                 </div>
             </div>
             <div class="students" v-if="panelType === 3">
                 <div class="all">
                     <div v-for="stu in studentsBean" :key="stu.id" class="stu" v-if="studentsBean.length > 0">
-                        <div class="img">
+                        <div class="img" @click="$router.push({ name:'OtherCenter', params:{id : stu.id}})">
                             <img :src="stu.avatar" alt="avatar">
                         </div>
                         <div class="nickname">{{stu.nickname}}</div>
@@ -146,6 +146,7 @@ export default {
         .img {
           width: 60px;
           height: 60px;
+          cursor: pointer;
           > img {
             width: 100%;
             height: 100%;
@@ -194,6 +195,7 @@ export default {
         .img {
           width: 60px;
           height: 60px;
+          // cursor: pointer;
           > img {
             width: 100%;
             height: 100%;
@@ -240,6 +242,7 @@ export default {
           .img {
             width: 50px;
             height: 50px;
+            cursor: pointer;
             > img {
               width: 100%;
               height: 100%;

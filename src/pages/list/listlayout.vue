@@ -1,6 +1,6 @@
 <template>
     <div>
-        <top-sel></top-sel>
+        <top-sel @chooseCirle="handleChooseCirle"></top-sel>
         <div class="listContent">
             <el-row :gutter="40">
                 <el-col :xs="24" :sm="24" :md="18" :lg="18" :xl="18">
@@ -8,11 +8,11 @@
                         <div class="searchGroup">
                             <div class="search">
                                 <el-input placeholder="请输入准确的大学名称或学科专业名称" v-model="search">
-                                    <el-select slot="prepend" placeholder="请选择" v-model="sk1">
+                                    <!-- <el-select slot="prepend" placeholder="请选择" v-model="sk1">
                                         <el-option label="搜内容" value="0"></el-option>
                                         <el-option label="搜昵称" value="1"></el-option>
                                         <el-option label="搜大学" value="2"></el-option>
-                                    </el-select>
+                                    </el-select> -->
                                     <el-button slot="append" icon="el-icon-search" @click="handleSearch"></el-button>
                                 </el-input>
                             </div>
@@ -43,7 +43,7 @@
                                     </li>
                                 </ul>
                             </div>
-                            <!-- <div class="searh1">
+                            <div class="searh1">
                                 <el-input placeholder="请输入内容" v-model="search1" size="small">
                                     <el-select slot="prepend" placeholder="请选择" v-model="sk">
                                         <el-option label="搜内容" value="0"></el-option>
@@ -51,7 +51,7 @@
                                     </el-select>
                                     <el-button slot="append" icon="el-icon-search"></el-button>
                                 </el-input>
-                            </div> -->
+                            </div>
 
                         </div>
                         <div class="type">
@@ -86,7 +86,7 @@
                                 </span>
                             </div>
                         </div>
-                        <router-view :lvParams="{type, mtype, keywords, sk, sort}"></router-view>
+                        <router-view :lvParams="{id, type, mtype, keywords, sk, sort}"></router-view>
                     </div>
                 </el-col>
                 <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
@@ -117,7 +117,8 @@ export default {
       priceSort: 0,
       timeSort: 0,
       chooseTime: true,
-
+      
+      id: -1,
       sk1: "",
       sk: "",
       keywords: "",
@@ -159,6 +160,9 @@ export default {
               this.sort = 'costdown'
           }
       }
+    },
+    handleChooseCirle(id){
+        this.id = id;
     }
   }
 };

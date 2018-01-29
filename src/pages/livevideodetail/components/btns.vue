@@ -1,7 +1,7 @@
 <template>
   <div class="group">
     <ul>
-      <template v-if="me">
+      <template v-if="bean.is_me">
         <li @click="handleTianjia">添加系列</li>
         <li @click="handleBianJi">
           <icon-svg iconClass="wechat"></icon-svg>
@@ -10,14 +10,15 @@
         <li@click="handleXiaJia">
           <icon-svg iconClass="wechat"></icon-svg>
           <p>下架</p>
-        </li>
-        <li @click="handleTuiGuan">
-          <icon-svg iconClass="wechat"></icon-svg>
-          <p>推广</p>
-        </li>
+          </li>
+          <li @click="handleTuiGuan">
+            <icon-svg iconClass="wechat"></icon-svg>
+            <p>推广</p>
+          </li>
       </template>
       <template v-else>
-        <li @click="handle">报名</li>
+        <li v-if="bean.is_teacher || (!bean.is_teacher && bean.is_pay)" @click="handleShangKe">上课</li>
+        <li v-else @click="handleBaoMing">报名</li>
         <li @click="handleZhiXun">
           <icon-svg iconClass="telephone"></icon-svg>
           <p>咨询</p>
@@ -32,43 +33,129 @@
         </li>
       </template>
     </ul>
+    <div ref="temp"></div>
+    <el-dialog title="选择支付方式" :visible.sync="dialogPay" width="300px">
+      <span>选择支付方式</span>
+      <el-radio-group v-model="pay_type">
+        <el-radio :label="1">支付宝</el-radio>
+        <el-radio :label="0">微信</el-radio>
+        <el-radio :label="2">余额</el-radio>
+      </el-radio-group>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogPay = false">取 消</el-button>
+        <el-button type="primary" @click="handleComitPay">确 定</el-button>
+      </span>
+
+      <el-dialog width="300px" title="微信支付二维码" :visible.sync="dialogWePay" append-to-body center :before-close="handleCloseWePay">
+        <img :src="`http://paysdk.weixin.qq.com/example/qrcode.php?data=${wechatPayCode}`" alt="">
+      </el-dialog>
+    </el-dialog>
   </div>
 </template>
 
 <script>
+import { liveapply, livepay, ispayed } from "@/api/livevideo";
 export default {
   props: {
-    me: {
-      type: Number,
-      default: 0
-    },
+    bean: {
+      type: Object
+    }
   },
-  methods:{
-      handle(){
-        this.$message.error("baoming todo");
-      },
-      handleZhiXun(){
-        this.$message.error("zhixun todo");
-      },
-      handleTiWen(){
-        this.$message.error("tiwen todo");
-      },
-      handleTuiGuan(){
-        this.$message.error("tuiguan todo");
-      },
-      handleTianjia(){
-        this.$message.error("Tianjia todo");
-      },
-      handleBianJi(){
-        this.$message.error("BianJi todo");
-      },
-      handleXiaJia(){
-        this.$message.error("XiaJia todo");
-      },
-      handleTuiGuan(){
-        this.$message.error("TuiGuang todo");
+  methods: {
+    handleShangKe() {
+      this.$message.error("shangke todo");
+    },
+    handleBaoMing() {
+      if (this.bean.price > 0) {
+        this.dialogPay = true;
+      } else {
+        let p = {
+          open_class_id: this.bean.open_class_id
+        };
+        liveapply(p).then(res => {
+          this.$message.success("报名成功");
+          this.bean.is_pay = 1;
+        });
+      }
+    },
+    handleZhiXun() {
+      this.$message.error("zhixun todo");
+    },
+    handleTiWen() {
+      this.$message.error("tiwen todo");
+    },
+    handleTuiGuan() {
+      this.$message.error("tuiguan todo");
+    },
+    handleTianjia() {
+      this.$message.error("Tianjia todo");
+    },
+    handleBianJi() {
+      this.$message.error("BianJi todo");
+    },
+    handleXiaJia() {
+      this.$message.error("XiaJia todo");
+    },
+    handleTuiGuan() {
+      this.$message.error("TuiGuang todo");
+    },
+    handleComitPay() {
+      let p = {
+        open_class_id: this.bean.open_class_id,
+        pay_type: this.pay_type
+      };
+      livepay(p).then(res => {
+        if (this.pay_type == 1) {
+          //alipay
+          this.$refs.temp.innerHTML = "";
+          this.$refs.temp.innerHTML = res;
+          document.getElementById("alipaysubmit").submit();
+        } else if (this.pay_type == 0) {
+          //wechatpay
+          this.wechatPayCode = res.code;
+          this.dialogWePay = true;
+        } else if (this.pay_type == 2) {
+          console.log(res);
+        }
+      });
+    },
+
+    handleCloseWePay(done){
+      this.wechatPayCode = '';
+      done();
+    }
+  },
+  data() {
+    return {
+      dialogPay: false,
+      pay_type: 1,
+      //wechatpay
+      dialogWePay: false,
+      wechatPayCode: "",
+      timer: ''
+    };
+  },
+  watch: {
+    wechatPayCode(val) {
+      if (val) {
+        this.timer = setInterval(() => {
+          let p = {id: this.bean.open_class_id};
+          ispayed(p).then( res => {
+            if(res.status){
+              this.$message.success('微信支付成功');
+              this.dialogWePay = false;
+              this.dialogPay = false;
+              this.$root.reload();
+            }
+          })
+        }, 5000);
+      } else {
+        if (this.timer) {
+          clearInterval(this.timer);
+        }
       }
     }
+  }
 };
 </script>
 
@@ -81,16 +168,16 @@ export default {
     padding: 0;
     display: flex;
     li {
-      &:hover > p{
-        color:$--color-primary;
+      &:hover > p {
+        color: $--color-primary;
       }
       height: 70px;
       text-align: center;
       cursor: pointer;
       padding: 0 25px;
-      > p{
-        color:#c1c1c1;
-        font-size: .8rem;
+      > p {
+        color: #c1c1c1;
+        font-size: 0.8rem;
         margin-top: -8px;
       }
     }
@@ -146,9 +233,8 @@ export default {
         border-left: 1px solid #dedede;
         border-right: none;
       }
-      li:nth-child(4) { 
+      li:nth-child(4) {
         order: 1;
-
       }
     }
   }

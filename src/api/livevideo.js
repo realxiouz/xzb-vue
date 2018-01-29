@@ -21,13 +21,13 @@ fetch.interceptors.response.use(response => {
         //需要权限直接去登陆
         if (response.data.message === "token错误或失效") {
             store.commit("SET_LOG_DIALOG", true);
-            return response.data;
+        } else {
+            //响应失败提示错误信息
+            Message({
+                message: response.data.message,
+                type: 'error'
+            })
         }
-        //响应失败提示错误信息
-        Message({
-            message: response.data.message,
-            type: 'error'
-        })
         return Promise.reject(response.data.message);
     }
     return response;
@@ -88,3 +88,25 @@ export const oclist = p => fetch.get('/api/openclasslist', { params: p })
 
 //进入直播间
 export const bjroom = p => fetch.get('/api/enterurl', { params: p })
+
+//报名免费直播
+export const liveapply = p => fetch.post('/api/liveapply', p);
+
+//报名收费直播
+export const livepay = p => fetch.post('/api/live/pay', p);
+
+//wechat是否已付款
+export const ispayed = p => fetch.get('/api/live/ispayed', { params: p });
+
+//根据公共课选择圈子
+export const getCircleByPS = p => fetch.get('/api/circle/publicsubject', { params: p })
+
+//根据非统考专业课选择圈子
+export const getCircleByMajor = p => fetch.get('/api/circle/major', { params: p })
+
+//根据学校选择圈子
+export const getCircleBySchool = p => fetch.get('/api/circle/schools', { params: p })
+
+
+//获取直播信息
+export const getlivevideo = p => fetch.get('/api/openinfo', { params: p })

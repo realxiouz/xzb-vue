@@ -14,9 +14,10 @@ import PageFoot from "@/pages/footer";
 import Banner from "@/pages/bannerbar";
 import Dialogs from "@/pages/dialogs";
 
-import { userinfo, unreadmsg,
-  shoppingCart } from "@/api/log";
+import { userinfo, unreadmsg, shoppingCart } from "@/api/log";
 import { mapMutations, mapState } from "vuex";
+//text api
+import { getlivevideo } from "@/api/livevideo";
 export default {
   name: "app",
   components: {
@@ -49,12 +50,17 @@ export default {
         }
       });
     }
+
+    let p = { id : 20};
+    getlivevideo(p).then( res => {
+      console.log(res)
+    })
   },
-  computed:{
-    ...mapState(["login"]),
+  computed: {
+    ...mapState(["login"])
   },
   methods: {
-    ...mapMutations(["RECORD_USERINFO","SET_MSG_COUNT", "SET_CART_COUNT"])
+    ...mapMutations(["RECORD_USERINFO", "SET_MSG_COUNT", "SET_CART_COUNT"])
   }
 };
 </script>
@@ -78,6 +84,21 @@ a {
   text-decoration: none;
   &:hover {
     color: $--color-primary;
+  }
+}
+
+ul{
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+//他人中心tab去掉margin-bottom 设置padding 0 20px background-color:#fff;
+.el-tabs__header {
+  margin: 0px;
+  .el-tabs__nav-wrap {
+    padding: 0 20px;
+    background-color: #fff;
   }
 }
 
