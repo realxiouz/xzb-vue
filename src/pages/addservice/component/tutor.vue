@@ -4,12 +4,171 @@
       <div class="title">确认专业</div>
       <choose-major v-on:listenFromChild="getSelMajor"></choose-major>
     </div>
+    <!-- 详情 -->
+    <div class="detail">
+      <div class="title">详情</div>
+      <el-form label-width="80px" ref="form" :model="form" :label-position="labPosition" style="max-width:800px">
+        <el-form-item label="标题" prop="title" :rules="{required: true, message: '请输入标题', trigger: 'blur'}">
+          <el-input v-model="form.title" placeholder="输入标题(醒目的标题有助于吸引眼球,不超过16个字)" :maxlength="16"></el-input>
+        </el-form-item>
+        <el-form-item label="描述" prop="content" :rules="{required: true, message: '请输入描述', trigger: 'blur'}">
+          <editor :bindData="form.content"></editor>
+        </el-form-item>
+        <el-form-item label="QQ" prop="qq">
+          <el-input v-model="form.qq" placeholder="QQ号"></el-input>
+        </el-form-item>
+        <el-form-item label="微信" prop="微信">
+          <el-input v-model="form.wechat" placeholder="wechat"></el-input>
+        </el-form-item>
+        <el-form-item label="联系电话" prop="mobil">
+          <el-input v-model="form.mobil" placeholder="联系电话"></el-input>
+        </el-form-item>
+        <el-form-item label="上传封面" prop="img" :rules="{required: true, message: '请上传封面', trigger: 'blur'}">
+          <el-upload class="upload" action="/api/uploadImage" :limit="1" :on-success="handleImgSuccess" :on-error="handleImgError" ref="imgUpload" :before-upload="beforeImgUpload" list-type="picture" :on-remove="handleImgRemove" :disabled="liveId > 0">
+            <el-button type="primary">点击上传</el-button>
+            <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过2Mb</div>
+          </el-upload>
+        </el-form-item>
+      </el-form>
+    </div>
+    <!-- 收费 -->
+    <div class="fee">
+      <div class="title">收费模式</div>
+      <el-form label-width="80px" ref="formFee" :model="formFee" :label-position="labPosition" :rules='formFeeRule' style="max-width:800px">
+        <!-- 收费选项 -->
+        <el-form-item>
+          <el-radio v-model="formFee.type2" label="3">一对一辅导，学生可灵活约定辅导次数</el-radio>
+        </el-form-item>
+        <el-form-item>
+          <el-radio v-model="formFee.type2" label="4">大班或小班课，学生交费后不能退费</el-radio>
+        </el-form-item>
+        <el-form-item>
+          <el-radio v-model="formFee.type2" label="5">高端辅导(分阶段收款;拟定学习规划,小班或一对一专人管理)</el-radio>
+        </el-form-item>
+        <!-- 费用选项 -->
+        <el-form-item>
+          <el-row :gutter="10">
+            <el-col :xs="24" :sm="12" :md="8" :lg="8" :xl="8">
+              <el-input v-model.number="formFee.cost" placeholder="辅导费用">
+                <template slot="append">元/次</template>
+              </el-input>
+            </el-col>
+            <el-col :xs="24" :sm="12" :md="8" :lg="8" :xl="8" v-if="formFee.type2 == 4 || formFee.type2 == 5">
+              <el-input v-model.number="formFee.num" placeholder="辅导次数">
+                <template slot="append">次</template>
+              </el-input>
+            </el-col>
+            <el-col :xs="24" :sm="12" :md="8" :lg="8" :xl="8" v-if="formFee.type2 == 5">
+              <el-input v-model.number="formFee.discount" placeholder="折扣">
+                <template slot="append">折</template>
+              </el-input>
+            </el-col>
+          </el-row>
+        </el-form-item>
+        <!-- 服务承诺 -->
+        <el-form-item v-if="formFee.type2 == 5">
+          <div class="promise">
+            <el-form-item>
+              <el-checkbox checked disabled>承诺保持高质量教学，并拟定教学阶段。</el-checkbox>
+              <el-button @click="handleAddPer" type="primary" size="small">添加阶段</el-button>
+            </el-form-item>
+            <!-- 第一阶段 -->
+            <el-row :gutter="10" style="margin-bottom:20px">
+              <el-col :xs="24" :sm="12" :md="8" :lg="8" :xl="8">
+                <el-form-item label="第1阶段" :rules="[{required: true, message: '输入正确的数字', trigger: 'blur',type: 'number'}]" :prop="'pers[0]'+'.num'">
+                  <el-input v-model.number="formFee.pers[0].num" size="mini">
+                    <template slot="append">次</template>
+                  </el-input>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <!-- 循环其余阶段 -->
+            <el-row :gutter="10" v-for="(per, index) in formFee.pers" :key="per.title" v-if="index > 0" style="margin-bottom:20px">
+              <el-col :xs="20" :sm="12" :md="8" :lg="8" :xl="8">
+                <el-form-item :label="per.title" :rules="[{required: true, message: '输入正确的数字', trigger: 'blur',type: 'number'}]" :prop="`pers.`+ index + '.num'">
+                  <el-input v-model.number="per.num" size="mini">
+                    <template slot="append">次</template>
+                  </el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :xs="4" :sm="4" :md="4" :lg="4" :xl="4">
+                <el-form-item label=" ">
+                  <el-button @click.prevent="removePer(per)" type="text">删除</el-button>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-form-item>
+              <el-checkbox checked disabled>拟定阶段学习规划（默认选项，新助邦提供各学科学习规划范本根据学生的实际情况进行修改即可）</el-checkbox>
+            </el-form-item>
+            <el-form-item>
+              <el-checkbox checked disabled>拟定授课计划和课后练习（默认选项，简单填写授课时间，地点，上课内容和需要讲义）</el-checkbox>
+            </el-form-item>
+
+            <el-checkbox-group v-model="formFee.promises">
+              <el-form-item>
+                <el-checkbox label="1">提问必答</el-checkbox>
+              </el-form-item>
+              <el-form-item>
+                <el-checkbox label="2">测试
+                </el-checkbox>
+              </el-form-item>
+              <el-form-item>
+                <el-checkbox label="3">指导论文</el-checkbox>
+              </el-form-item>
+              <el-form-item>
+                <el-checkbox label="4">协助联系导师</el-checkbox>
+              </el-form-item>
+              <el-form-item>
+                <el-checkbox label="5">其他</el-checkbox>
+              </el-form-item>
+            </el-checkbox-group>
+            <el-form-item>
+              <el-input type="textarea" v-if="formFee.promises.indexOf('5') > -1" v-model="formFee.other_promise"></el-input>
+            </el-form-item>
+          </div>
+        </el-form-item>
+      </el-form>
+    </div>
+    <!-- 推广 -->
+    <div class="spread">
+      <div class="title">推广分成模式</div>
+      <el-form label-width="80px" ref="formSpread" :model="formSpread" :label-position="labPosition" style="max-width:500px">
+        <el-form-item>
+          <div>
+            <el-checkbox v-model="formSpread.is_extended">设置推广比例为</el-checkbox>
+            <input type="text" class="inlineinput" v-if="formSpread.is_extended" :value="20" disabled>
+            <a href="" v-if="formSpread.is_extended">%&nbsp;&nbsp;什么叫推广比例？</a>
+          </div>
+        </el-form-item>
+        <el-form-item>
+          <div>
+            <el-checkbox v-model="formSpread.checked2">设置老师提成:</el-checkbox>
+            <input type="number" class="inlineinput" v-if="formSpread.checked2" v-model.number="formSpread.teacher_percent" :min="0.5" :max="100">
+            <a href="" v-if="formSpread.checked2">%&nbsp;&nbsp;什么叫老师提成？</a>
+          </div>
+        </el-form-item>
+        <el-form-item>
+          <el-checkbox v-model="formSpread.is_adv"> 委托新助邦免费招聘班主任</el-checkbox>
+        </el-form-item>
+        <el-form-item prop="checked4">
+          <div>
+            <el-checkbox v-model="formSpread.checked4">我已阅读</el-checkbox>
+            <a href="" v-if="formSpread.checked4">&nbsp;&nbsp;新助邦直播课发布协议(试行)</a>
+          </div>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="handleSubmitForm">确认提交</el-button>
+        </el-form-item>
+      </el-form>
+    </div>
   </div>
 </template>
 
 <script>
 import ChooseMajor from "./choosemajor";
-import { quillRedefine } from "vue-quill-editor-upload";
+import Editor from "@/components/quill-editor";
+import { addService } from "@/api/service";
+// import { quillRedefine } from "vue-quill-editor-upload";
 export default {
   data() {
     return {
@@ -17,17 +176,15 @@ export default {
 
       form: {
         title: "",
-        content: "",
-        time: "",
-        length: "",
-        fee: 0,
-        feeCount: "",
+        content: "helloworld",
+        qq: "",
+        wechat: "",
+        mobil: "",
         img: ""
       },
       formRule: {
         title: { required: true, message: "请输入标题", trigger: "blur" },
         content: { required: true, message: "请输入内容", trigger: "blur" },
-        time: { required: true, message: "请选择上课时间", trigger: "blur" },
         length: [
           { required: true, message: "请输入上课时长", trigger: "blur" },
           {
@@ -38,38 +195,27 @@ export default {
             message: "上课时长在0.5至12小时之间"
           }
         ],
-        teacher: { required: true, message: "请输入上课讲师", trigger: "blur" },
         img: { required: true, message: "请上传封面", trigger: "blur" }
       },
 
-      formSpread: {},
+      formFee: { type2: "3", cost: '', num:'', discount:'',promises: [], pers: [{ num: "", title: "第1阶段" }], other_promise:'' },
+      formFeeRule: {},
+
+      formSpread: {is_extended: false, is_adv:false, checked4:true, teacher_percent:""},
 
       labPosition: "right",
-      firstActive: true,
-      secActive: false,
-      thirdActive: false,
-      forthActive: false,
 
       liveId: "",
       attach: "",
       editorOption: {},
 
-      //time picker option
-      pickerOption: {
-        disabledDate(val) {
-          if (+new Date() - val - 24 * 3600 * 1000 < 0) {
-            return false;
-          }
-          return true;
-        }
-      }
     };
   },
   components: {
-    ChooseMajor
+    ChooseMajor,
+    Editor
   },
   methods: {
-
     handleSuccessAttach(res, file, fl) {
       if (!res.success) {
         this.$message.error(res.message.msg);
@@ -121,6 +267,36 @@ export default {
           major_id: ids[2]
         };
       }
+    },
+    //添加阶段
+    handleAddPer() {
+      this.formFee.pers.push({
+        num: "",
+        title: `第${this.formFee.pers.length+1}阶段`
+      });
+      console.log(this.formFee.pers)
+    },
+    //删除阶段
+    removePer(item) {
+      var index = this.formFee.pers.indexOf(item);
+      if (index !== -1) {
+        this.formFee.pers.splice(index, 1);
+      }
+      console.log(this.formFee.pers)
+    },
+    //提交表单
+    handleSubmitForm(){
+      if (!this.majorObj) {
+        this.$message.error("请首先选择专业");
+        return;
+      }
+      if(!this.formSpread.checked4){
+         this.$message.error("勾选协议");
+          return;
+      }
+      addService(Object.assign({}, this.form, this.majorObj, this.formFee)).then( res => {
+        console.log(res)
+      })
     }
   },
   mounted() {
@@ -129,98 +305,22 @@ export default {
       this.labPosition = "top";
     }
   },
-  created() {
-    this.editorOption = quillRedefine({
-      uploadConfig: {
-        action: "/api/uploadImage",
-        res: respnse => {
-          return respnse.data.img.url;
-        }
-      }
-    });
-  },
-  watch: {
-    "form.fee": function(val) {
-      if (val) {
-        this.formRule.feeCount = [
-          { required: true, message: "请输入费用", trigger: "blur" },
-          {
-            type: "number",
-            max: 1000,
-            min: 0.01,
-            trigger: "change",
-            message: "费用在0.01至1000之间"
-          }
-        ];
-      } else {
-        delete this.formRule.feeCount;
-      }
-    }
-  }
+  // created() {
+  //   this.editorOption = quillRedefine({
+  //     uploadConfig: {
+  //       action: "/api/uploadImage",
+  //       res: respnse => {
+  //         return respnse.data.img.url;
+  //       }
+  //     }
+  //   });
+  // },
 };
 </script>
 
 <style lang="scss" scoped>
-.wrapper {
-  max-width: 1200px;
-  margin: 20px auto;
-  //   overflow-x: hidden;
-  .leftPart {
-    // background-color: #fff;
-    // border: 1px solid black;
-    padding-right: 10px;
-    .content {
-      background-color: #fff;
-
-      .head {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 15px 20px 15px;
-        border-bottom: 2px solid #e4e7ed;
-      }
-      .body {
-        .text {
-          line-height: 70px;
-          text-align: center;
-          border-left: 10px solid transparent;
-          &.active {
-            border-color: #1ecca7;
-            background-color: #f6fdfc;
-          }
-        }
-      }
-    }
-  }
-  .rightPart {
-    background-color: #fff;
-    // border: 1px solid black;
-    padding: 20px 30px;
-    .type {
-      margin-bottom: 20px;
-    }
-    .chooseMajor {
-      margin-bottom: 20px;
-    }
-    .description {
-      margin-bottom: 20px;
-    }
-    .spread {
-      margin-bottom: 20px;
-    }
-  }
-}
-
 .upload {
   line-height: 16px;
-}
-
-@media (max-width: 400px) {
-  .wrapper {
-    .rightPart {
-      padding: 10px;
-    }
-  }
 }
 
 //标题样式
@@ -247,5 +347,7 @@ export default {
   }
 }
 </style>
+
+
 
 

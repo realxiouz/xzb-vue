@@ -72,6 +72,9 @@ export default {
     labelPosition: {
       type: String,
       default: "right"
+    },
+    initBean:{
+      type:Object
     }
   },
   methods: {
@@ -157,6 +160,20 @@ export default {
         val = `${this.schoolID}-${val}`
       }
       this.$emit("listenFromChild",val,this.form.type);
+    }
+  },
+  mounted(){
+    if(this.initBean != null){
+      if(this.initBean.public_subject_id > 0){
+        this.form.type = 3;
+        console.log(3);
+      } else if(this.initBean.unified_id > 0){
+        this.form.type = 2;
+        console.log(2)
+      } else {
+        this.form.type = 1;
+        console.log(1)
+      }
     }
   }
 };

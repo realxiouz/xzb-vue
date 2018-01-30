@@ -10,7 +10,7 @@ import ForgetPW from '@/pages/log/forgetpassword';
 import ServiceLO from '@/pages/addservice/serviceLayout';
 import AddLiveVideo from "@/pages/addservice/component/livevideo"; //直播
 import AddTutor from "@/pages/addservice/component/tutor"; //辅导
-import AddReference from "@/pages/addservice/component/reference";// 资料
+import AddReference from "@/pages/addservice/component/reference"; // 资料
 import AddPackage from "@/pages/addservice/component/package"; //打包课
 
 //直播详情
@@ -32,6 +32,11 @@ import Teach from '@/pages/usercenter/components/study';
 //他人中心
 import OtherCenter from '@/pages/othercenter/oclayout';
 import OCLiveVideo from '@/pages/othercenter/components/livevideo';
+
+//编辑服务
+import EditLO from '@/pages/editservice/editlayout';
+import EditLiveVideo from "@/pages/editservice/component/livevideo";
+
 
 Vue.use(Router);
 
@@ -63,31 +68,59 @@ export default new Router({
                 component: ServiceLO,
                 redirect: 'addservice/reference',
                 children: [{
-                    path:'reference',
-                    name: "AddReference",
-                    component: AddReference
-                },{
-                    path:'tutor',
-                    name: "AddTutor",
-                    component: AddTutor
-                },
-                {
-                    path:'livevideo',
-                    name: "AddLiveVideo",
-                    component: AddLiveVideo
-                },
-                {
-                    path:'package',
-                    name: "AddPackage",
-                    component: AddPackage
-                }
-            ]
+                        path: 'reference',
+                        name: "AddReference",
+                        component: AddReference
+                    }, {
+                        path: 'tutor',
+                        name: "AddTutor",
+                        component: AddTutor
+                    },
+                    {
+                        path: 'livevideo',
+                        name: "AddLiveVideo",
+                        component: AddLiveVideo
+                    },
+                    {
+                        path: 'package',
+                        name: "AddPackage",
+                        component: AddPackage
+                    }
+                ]
+            },
+            //编辑服务
+            {
+                path: 'editservice',
+                component: EditLO,
+                // redirect: 'addservice/reference',
+                children: [
+                    // {
+                    //     path: 'reference',
+                    //     name: "AddReference",
+                    //     component: AddReference
+                    // }, 
+                    // {
+                    //     path: 'tutor',
+                    //     name: "AddTutor",
+                    //     component: AddTutor
+                    // },
+                    {
+                        path: 'livevideo/:id',
+                        name: "EditLiveVideo",
+                        component: EditLiveVideo
+                    },
+                    // {
+                    //     path: 'package',
+                    //     name: "AddPackage",
+                    //     component: AddPackage
+                    // }
+                ]
             },
             //直播详情
             {
                 path: 'livevideo/:id',
                 component: Livevideo,
-                name:'Livevideo',
+                name: 'Livevideo',
                 redirect: 'livevideo/:id/detail',
                 children: [{
                         path: 'detail',
@@ -112,7 +145,7 @@ export default new Router({
                 path: 'list',
                 component: List,
                 children: [{
-                    path:'livevideo',
+                    path: 'livevideo',
                     component: ListLiveVideo
                 }]
             },
@@ -120,8 +153,7 @@ export default new Router({
             {
                 path: 'usercenter',
                 component: UserCenter,
-                children:[
-                    {
+                children: [{
                         component: Study,
                         path: 'studying',
                     },
@@ -138,8 +170,7 @@ export default new Router({
                 component: OtherCenter,
                 name: 'OtherCenter',
                 redirect: 'othercenter/:id/livevideo',
-                children:[
-                    {
+                children: [{
                         component: OCLiveVideo,
                         path: 'liveVideo',
                     },

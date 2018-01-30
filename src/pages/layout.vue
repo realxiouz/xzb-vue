@@ -51,10 +51,10 @@ export default {
       });
     }
 
-    let p = { id : 20};
-    getlivevideo(p).then( res => {
-      console.log(res)
-    })
+    // let p = { id : 20};
+    // getlivevideo(p).then( res => {
+    //   console.log(res)
+    // })
   },
   computed: {
     ...mapState(["login"])

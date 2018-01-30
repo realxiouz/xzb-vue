@@ -63,7 +63,7 @@ export default {
     return {
       detailBean: {},
       errorImg: 'this.src="' + require("../../../assets/default.png") + '"',
-      dialogDown:true
+      dialogDown: false
     };
   },
   props: {

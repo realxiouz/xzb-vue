@@ -95,6 +95,10 @@ export const liveapply = p => fetch.post('/api/liveapply', p);
 //报名收费直播
 export const livepay = p => fetch.post('/api/live/pay', p);
 
+
+//余额验证支付密码
+export const checkpw = p => fetch.post('/api/confirmpwd', p);
+
 //wechat是否已付款
 export const ispayed = p => fetch.get('/api/live/ispayed', { params: p });
 
@@ -110,3 +114,6 @@ export const getCircleBySchool = p => fetch.get('/api/circle/schools', { params:
 
 //获取直播信息
 export const getlivevideo = p => fetch.get('/api/openinfo', { params: p })
+
+//获取直播信息
+export const editlv = p => fetch.post('/api/liveedito', p)

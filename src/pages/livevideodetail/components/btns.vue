@@ -7,14 +7,14 @@
           <icon-svg iconClass="wechat"></icon-svg>
           <p>编辑</p>
         </li>
-        <li@click="handleXiaJia">
+        <li @click="handleXiaJia">
           <icon-svg iconClass="wechat"></icon-svg>
           <p>下架</p>
-          </li>
-          <li @click="handleTuiGuan">
-            <icon-svg iconClass="wechat"></icon-svg>
-            <p>推广</p>
-          </li>
+        </li>
+        <li @click="handleTuiGuan">
+          <icon-svg iconClass="wechat"></icon-svg>
+          <p>推广</p>
+        </li>
       </template>
       <template v-else>
         <li v-if="bean.is_teacher || (!bean.is_teacher && bean.is_pay)" @click="handleShangKe">上课</li>
@@ -46,15 +46,29 @@
         <el-button type="primary" @click="handleComitPay">确 定</el-button>
       </span>
 
+      <!-- wechatpay dialog -->
       <el-dialog width="300px" title="微信支付二维码" :visible.sync="dialogWePay" append-to-body center :before-close="handleCloseWePay">
         <img :src="`http://paysdk.weixin.qq.com/example/qrcode.php?data=${wechatPayCode}`" alt="">
+      </el-dialog>
+
+      <!-- 余额支付dialog -->
+      <el-dialog width="300px" title="余额支付" :visible.sync="dialogRestPay" append-to-body center>
+        <el-form :model="form">
+          <el-form-item label="支付密码" label-width="80px">
+            <el-input v-model="form.pw" auto-complete="off" type="password"></el-input>
+          </el-form-item>
+          <el-form-item>
+            <el-button @click="handleCheckPW">确定支付</el-button>
+          </el-form-item>
+        </el-form>
       </el-dialog>
     </el-dialog>
   </div>
 </template>
 
 <script>
-import { liveapply, livepay, ispayed } from "@/api/livevideo";
+import { liveapply, livepay, ispayed, checkpw } from "@/api/livevideo";
+import md5 from "js-md5";
 export default {
   props: {
     bean: {
@@ -100,6 +114,11 @@ export default {
       this.$message.error("TuiGuang todo");
     },
     handleComitPay() {
+      //首先输入支付密码
+      if (this.pay_type == 2) {
+        this.dialogRestPay = true;
+        return;
+      }
       let p = {
         open_class_id: this.bean.open_class_id,
         pay_type: this.pay_type
@@ -114,15 +133,44 @@ export default {
           //wechatpay
           this.wechatPayCode = res.code;
           this.dialogWePay = true;
-        } else if (this.pay_type == 2) {
-          console.log(res);
         }
       });
     },
 
-    handleCloseWePay(done){
-      this.wechatPayCode = '';
+    handleCloseWePay(done) {
+      this.wechatPayCode = "";
       done();
+    },
+
+    //验证余额支付密码
+    handleCheckPW() {
+      if (!this.form.pw) {
+        this.$message.error("输入支付密码");
+        return;
+      }
+      let p = { paypassword: md5(this.form.pw) };
+      checkpw(p).then(res => {
+        if (res.status == 1) {
+          this.form.pw = '';
+          let p = {
+            open_class_id: this.bean.open_class_id,
+            pay_type: 2
+          };
+          livepay(p).then( res => {
+            if(res.status){
+              this.$message.success("微信支付成功");
+              this.dialogRestPay = false;
+              this.dialogPay = false;
+              this.$root.reload();
+            }
+          })
+        } else if(res.status == 0){
+          this.$message.error("密码输入错误 重新输入");
+          this.form.pw = '';
+        } else if(res.status == 2){
+          this.$message.error("没有设置支付密码");
+        }
+      });
     }
   },
   data() {
@@ -132,22 +180,25 @@ export default {
       //wechatpay
       dialogWePay: false,
       wechatPayCode: "",
-      timer: ''
+      timer: "",
+      // 余额支付
+      dialogRestPay: false,
+      form: {}
     };
   },
   watch: {
     wechatPayCode(val) {
       if (val) {
         this.timer = setInterval(() => {
-          let p = {id: this.bean.open_class_id};
-          ispayed(p).then( res => {
-            if(res.status){
-              this.$message.success('微信支付成功');
+          let p = { id: this.bean.open_class_id };
+          ispayed(p).then(res => {
+            if (res.status) {
+              this.$message.success("微信支付成功");
               this.dialogWePay = false;
               this.dialogPay = false;
               this.$root.reload();
             }
-          })
+          });
         }, 5000);
       } else {
         if (this.timer) {

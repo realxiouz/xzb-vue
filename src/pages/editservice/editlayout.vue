@@ -21,7 +21,7 @@
             </el-col>
             <div>
                 <el-col :xs="24" :sm="18" :md="18" :lg="18" :xl="18" class="rightPart">
-                    <el-tabs v-model="currentTab">
+                    <!-- <el-tabs v-model="currentTab">
                         <el-tab-pane label="考研" name="first">
                             <div class="type">
                                 <div class="title">服务类别</div>
@@ -52,7 +52,8 @@
                         </el-tab-pane>
                         <el-tab-pane label="公务员" name="second">
                         </el-tab-pane>
-                    </el-tabs>
+                    </el-tabs> -->
+                    <router-view></router-view>
                 </el-col>
             </div>
 
@@ -61,22 +62,30 @@
 </template>
 
 <script>
-import IconButton from "./component/iconbutton";
+import { getlivevideo } from "@/api/livevideo";
+// import IconButton from "./component/iconbutton";
 
 export default {
   data() {
     return {
       currentTab: "first",
       currentIconBtn: 1,
+      liveId: "",
     };
   },
-  components: {
-    IconButton,
-  },
+//   components: {
+//     IconButton,
+//   },
   methods: {
   },
   wacth: {
   },
+//   mounted() {
+//     let p ={id:16};
+//     getlivevideo(p).then(res=>{
+//       console.log(res)
+//     })
+//   },
 };
 </script>
 
