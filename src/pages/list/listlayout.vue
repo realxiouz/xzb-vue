@@ -8,12 +8,7 @@
                         <div class="searchGroup">
                             <div class="search">
                                 <el-input placeholder="请输入准确的大学名称或学科专业名称" v-model="search">
-                                    <!-- <el-select slot="prepend" placeholder="请选择" v-model="sk1">
-                                        <el-option label="搜内容" value="0"></el-option>
-                                        <el-option label="搜昵称" value="1"></el-option>
-                                        <el-option label="搜大学" value="2"></el-option>
-                                    </el-select> -->
-                                    <el-button slot="append" icon="el-icon-search" @click="handleSearch"></el-button>
+                                    <el-button slot="append" icon="el-icon-search" @click="handleSearchCircle"></el-button>
                                 </el-input>
                             </div>
                             <div class="group">
@@ -23,11 +18,11 @@
 
                         </div>
                         <div class="nav">
-                            <el-menu mode="horizontal" :router="true" default-active="livevideo" style="width:100%">
+                            <el-menu mode="horizontal" :router="true" style="width:100%" :default-active="currentRoute">
                                 <el-menu-item index="detail">电子</el-menu-item>
                                 <el-menu-item index="chapter">纸质</el-menu-item>
                                 <el-menu-item index="books">视屏</el-menu-item>
-                                <el-menu-item index="post">辅导</el-menu-item>
+                                <el-menu-item index="tutor">辅导</el-menu-item>
                                 <el-menu-item index="livevideo">直播</el-menu-item>
                             </el-menu>
                         </div>
@@ -35,21 +30,34 @@
                             <div class="time">
                                 <!-- <span >分类:</span> -->
                                 <ul>
-                                    <li>
-                                        <span :class="{active : type == 0}" @click="type=0">未开始</span>
-                                    </li>
-                                    <li>
-                                        <span :class="{active : type == 1}" @click="type=1">已结束</span>
-                                    </li>
+                                    <template v-if="currentRoute === 'tutor'">
+                                        <li>
+                                            <span :class="{active : type == 5}" @click="type=5">高端班</span>
+                                        </li>
+                                        <li>
+                                            <span :class="{active : type == 4}" @click="type=4">小班课</span>
+                                        </li>
+                                        <li>
+                                            <span :class="{active : type == 3}" @click="type=3">一对一</span>
+                                        </li>
+                                    </template>
+                                    <template v-if="currentRoute === 'livevideo'">
+                                        <li>
+                                            <span :class="{active : type == 0}" @click="type=0">未开始</span>
+                                        </li>
+                                        <li>
+                                            <span :class="{active : type == 1}" @click="type=1">已结束</span>
+                                        </li>
+                                    </template>
                                 </ul>
                             </div>
                             <div class="searh1">
                                 <el-input placeholder="请输入内容" v-model="search1" size="small">
-                                    <el-select slot="prepend" placeholder="请选择" v-model="sk">
+                                    <el-select slot="prepend" placeholder="请选择" v-model="searchtype">
                                         <el-option label="搜内容" value="0"></el-option>
                                         <el-option label="搜昵称" value="1"></el-option>
                                     </el-select>
-                                    <el-button slot="append" icon="el-icon-search"></el-button>
+                                    <el-button slot="append" icon="el-icon-search" @click="handleSearch"></el-button>
                                 </el-input>
                             </div>
 
@@ -74,7 +82,6 @@
                             </ul>
                         </div>
                         <div class="sort">
-                            <!-- <span style="padding:20px 0 20px 10px">综合排序</span> -->
                             <div class="time">
                                 <span :class="{active : chooseTime}" @click="handleTimeSort">日期
                                     <i :class="timeSort== 0? 'el-icon-arrow-down': 'el-icon-arrow-up'"></i>
@@ -102,6 +109,7 @@
 </template>
 
 <script>
+import { circleserach } from "@/api/livevideo";
 import TopSel from "./components/top";
 import SidePanel from "./components/sidepanel";
 export default {
@@ -111,26 +119,39 @@ export default {
   },
   data() {
     return {
+      //圈子搜索
       search: "",
+      //按分类搜索
       search1: "",
+      //分类搜索类型
+      searchtype: "",
 
       priceSort: 0,
       timeSort: 0,
       chooseTime: true,
-      
+
       id: -1,
-      sk1: "",
       sk: "",
       keywords: "",
       type: 0, // 0:未开始 1:已结束
       mtype: 0, // 0:全部 1:名师 2:机构
-      sort: ''
+      sort: "",
+
+      currentRoute: ""
     };
   },
   methods: {
+    //圈子搜索
+    handleSearchCircle() {
+      let p = { keyword: this.search };
+      circleserach(p).then(res => {
+        this.id = res.id;
+      });
+    },
+    //分类搜索
     handleSearch() {
-      this.keywords = this.search;
-      this.sk = this.sk1;
+      this.keywords = this.search1;
+      this.sk = this.searchtype;
     },
 
     handleTimeSort() {
@@ -138,13 +159,12 @@ export default {
       if (!this.chooseTime) {
         this.chooseTime = true;
       }
-
-      if(this.chooseTime){
-          if(this.timeSort){
-              this.sort = 'dateup'
-          }else{
-              this.sort = 'datedown'
-          }
+      if (this.chooseTime) {
+        if (this.timeSort) {
+          this.sort = "dateup";
+        } else {
+          this.sort = "datedown";
+        }
       }
     },
     handlePriceSort() {
@@ -152,18 +172,48 @@ export default {
       if (this.chooseTime) {
         this.chooseTime = false;
       }
-
-      if(!this.chooseTime){
-          if(this.priceSort){
-              this.sort = 'costup'
-          }else{
-              this.sort = 'costdown'
-          }
+      if (!this.chooseTime) {
+        if (this.priceSort) {
+          this.sort = "costup";
+        } else {
+          this.sort = "costdown";
+        }
       }
     },
-    handleChooseCirle(id){
-        this.id = id;
+    //选择圈子
+    handleChooseCirle(id) {
+      this.id = id;
     }
+  },
+  watch: {
+    search1(val) {
+      if (!val) {
+        this.keywords = "";
+      }
+    },
+    search(val) {
+      if (!val) {
+        this.id = -1;
+      }
+    },
+    "$route.path": function() {
+      this.currentRoute = this.$route.path.split("/")[
+        this.$route.path.split("/").length - 1
+      ];
+    },
+    currentRoute(val){
+        if(val === 'tutor'){
+            this.type = 5;
+        }
+        if(val === 'livevideo'){
+            this.type = 0;
+        }
+    }
+  },
+  created() {
+    this.currentRoute = this.$route.path.split("/")[
+      this.$route.path.split("/").length - 1
+    ];
   }
 };
 </script>
@@ -204,14 +254,14 @@ export default {
       display: flex;
       padding: 0px 10px 0px 0;
       justify-content: space-between;
-    //   .searh1 {
-    //     margin-top: 12px;
-    //     .el-input {
-    //       .el-input-group__prepend {
-    //         width: 100px !important;
-    //       }
-    //     }
-    //   }
+      .searh1 {
+        margin-top: 12px;
+        .el-input {
+          .el-input-group__prepend {
+            width: 100px !important;
+          }
+        }
+      }
     }
     .time,
     .type {
@@ -264,8 +314,8 @@ export default {
 
 <style>
 /* inputgroup 前缀不现实修复 */
-.el-input.el-input--suffix{
-    width: 100px !important;
+.el-input.el-input--suffix {
+  width: 100px !important;
 }
 </style>
 

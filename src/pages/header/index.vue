@@ -49,7 +49,7 @@
                     <b-nav-item href="#">专业圈</b-nav-item>
                     <b-nav-item-dropdown text="服务" right>
                         <b-dropdown-item href="#">资料</b-dropdown-item>
-                        <b-dropdown-item href="#">辅导</b-dropdown-item>
+                        <b-dropdown-item href="#" @click="$router.push('/list/tutor')">辅导</b-dropdown-item>
                         <b-dropdown-item href="#" @click="$router.push('/list/livevideo')">直播</b-dropdown-item>
                     </b-nav-item-dropdown>
                     <b-nav-item-dropdown text="需求" right>

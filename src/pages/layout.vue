@@ -93,6 +93,10 @@ ul{
   list-style: none;
 }
 
+button:focus{
+  outline:none;
+}
+
 //他人中心tab去掉margin-bottom 设置padding 0 20px background-color:#fff;
 .el-tabs__header {
   margin: 0px;

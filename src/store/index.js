@@ -14,6 +14,7 @@ const state = {
     cartCount: 0,
     showRegDialog: false,
     showLogDialog: false,
+    classId: 0, //班级id
 }
 
 export default new Vuex.Store({

@@ -8,11 +8,11 @@
     <div class="detail">
       <div class="title">详情</div>
       <el-form label-width="80px" ref="form" :model="form" :label-position="labPosition" style="max-width:800px">
-        <el-form-item label="标题" prop="title" :rules="{required: true, message: '请输入标题', trigger: 'blur'}">
-          <el-input v-model="form.title" placeholder="输入标题(醒目的标题有助于吸引眼球,不超过16个字)" :maxlength="16"></el-input>
+        <el-form-item label="标题" prop="description" :rules="{required: true, message: '请输入标题', trigger: 'blur'}">
+          <el-input v-model="form.description" placeholder="输入标题(醒目的标题有助于吸引眼球,不超过16个字)" :maxlength="16"></el-input>
         </el-form-item>
-        <el-form-item label="描述" prop="content" :rules="{required: true, message: '请输入描述', trigger: 'blur'}">
-          <editor :bindData="form.content"></editor>
+        <el-form-item label="描述" prop="detail" :rules="{required: true, message: '请输入描述', trigger: 'blur'}">
+          <editor :bindData="form.detail"></editor>
         </el-form-item>
         <el-form-item label="QQ" prop="qq">
           <el-input v-model="form.qq" placeholder="QQ号"></el-input>
@@ -23,7 +23,7 @@
         <el-form-item label="联系电话" prop="mobil">
           <el-input v-model="form.mobil" placeholder="联系电话"></el-input>
         </el-form-item>
-        <el-form-item label="上传封面" prop="img" :rules="{required: true, message: '请上传封面', trigger: 'blur'}">
+        <el-form-item label="上传封面" prop="image" :rules="{required: true, message: '请上传封面', trigger: 'blur'}">
           <el-upload class="upload" action="/api/uploadImage" :limit="1" :on-success="handleImgSuccess" :on-error="handleImgError" ref="imgUpload" :before-upload="beforeImgUpload" list-type="picture" :on-remove="handleImgRemove" :disabled="liveId > 0">
             <el-button type="primary">点击上传</el-button>
             <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过2Mb</div>
@@ -49,19 +49,25 @@
         <el-form-item>
           <el-row :gutter="10">
             <el-col :xs="24" :sm="12" :md="8" :lg="8" :xl="8">
-              <el-input v-model.number="formFee.cost" placeholder="辅导费用">
-                <template slot="append">元/次</template>
-              </el-input>
+              <el-form-item :rules="[{required: true, message: '输入正确的数字', trigger: 'blur',type: 'number'}]" prop="cost">
+                <el-input v-model.number="formFee.cost" placeholder="辅导费用">
+                  <template slot="append">元/次</template>
+                </el-input>
+              </el-form-item>
             </el-col>
             <el-col :xs="24" :sm="12" :md="8" :lg="8" :xl="8" v-if="formFee.type2 == 4 || formFee.type2 == 5">
-              <el-input v-model.number="formFee.num" placeholder="辅导次数">
-                <template slot="append">次</template>
-              </el-input>
+              <el-form-item :rules="[{required: true, message: '输入正确的数字', trigger: 'blur',type: 'number'}]" prop="num">
+                <el-input v-model.number="formFee.num" placeholder="辅导次数">
+                  <template slot="append">次</template>
+                </el-input>
+              </el-form-item>
             </el-col>
             <el-col :xs="24" :sm="12" :md="8" :lg="8" :xl="8" v-if="formFee.type2 == 5">
-              <el-input v-model.number="formFee.discount" placeholder="折扣">
-                <template slot="append">折</template>
-              </el-input>
+              <el-form-item :rules="[{required: true, message: '输入正确的数字', trigger: 'blur',type: 'number'}]" prop="discount">
+                <el-input v-model.number="formFee.discount" placeholder="折扣">
+                  <template slot="append">折</template>
+                </el-input>
+              </el-form-item>
             </el-col>
           </el-row>
         </el-form-item>
@@ -175,40 +181,44 @@ export default {
       majorObj: null,
 
       form: {
-        title: "",
-        content: "helloworld",
+        description: "",
+        detail: "helloworld",
         qq: "",
         wechat: "",
         mobil: "",
-        img: ""
+        image: ""
       },
       formRule: {
-        title: { required: true, message: "请输入标题", trigger: "blur" },
-        content: { required: true, message: "请输入内容", trigger: "blur" },
-        length: [
-          { required: true, message: "请输入上课时长", trigger: "blur" },
-          {
-            type: "number",
-            max: 12,
-            min: 0.5,
-            trigger: "change",
-            message: "上课时长在0.5至12小时之间"
-          }
-        ],
-        img: { required: true, message: "请上传封面", trigger: "blur" }
+        description: { required: true, message: "请输入标题", trigger: "blur" },
+        detail: { required: true, message: "请输入内容", trigger: "blur" },
+        image: { required: true, message: "请上传封面", trigger: "blur" }
       },
 
-      formFee: { type2: "3", cost: '', num:'', discount:'',promises: [], pers: [{ num: "", title: "第1阶段" }], other_promise:'' },
+      formFee: {
+        //辅导类型
+        service_type: "1",
+        type2: "3",
+        cost: "",
+        num: "",
+        discount: "",
+        promises: [],
+        pers: [{ num: "", title: "第1阶段" }],
+        other_promise: ""
+      },
       formFeeRule: {},
 
-      formSpread: {is_extended: false, is_adv:false, checked4:true, teacher_percent:""},
+      formSpread: {
+        is_extended: false,
+        is_adv: false,
+        checked4: true,
+        teacher_percent: ""
+      },
 
       labPosition: "right",
 
       liveId: "",
       attach: "",
-      editorOption: {},
-
+      editorOption: {}
     };
   },
   components: {
@@ -246,11 +256,11 @@ export default {
         this.$message.error(res.message.msg);
         return;
       }
-      this.form.img = res.data.file.url;
-      console.log(this.form.img);
+      this.form.image = res.data.file.url;
+      console.log(this.form.image);
     },
     handleImgRemove() {
-      this.form.img = "";
+      this.form.image = "";
     },
 
     //选择专业
@@ -272,9 +282,8 @@ export default {
     handleAddPer() {
       this.formFee.pers.push({
         num: "",
-        title: `第${this.formFee.pers.length+1}阶段`
+        title: `第${this.formFee.pers.length + 1}阶段`
       });
-      console.log(this.formFee.pers)
     },
     //删除阶段
     removePer(item) {
@@ -282,21 +291,58 @@ export default {
       if (index !== -1) {
         this.formFee.pers.splice(index, 1);
       }
-      console.log(this.formFee.pers)
     },
     //提交表单
-    handleSubmitForm(){
+    handleSubmitForm() {
+      //专业未选择
       if (!this.majorObj) {
         this.$message.error("请首先选择专业");
         return;
       }
-      if(!this.formSpread.checked4){
-         this.$message.error("勾选协议");
-          return;
+      //协议未勾选
+      if (!this.formSpread.checked4) {
+        this.$message.error("勾选协议");
+        return;
       }
-      addService(Object.assign({}, this.form, this.majorObj, this.formFee)).then( res => {
-        console.log(res)
-      })
+      //form验证
+      this.$refs.form.validate(valid => {
+        if (!valid) {
+          this.$message.error("信息不完整");
+        } else {
+          //formFee验证
+          this.$refs.formFee.validate(valid => {
+            if (!valid) {
+              this.$message.error("信息不完整");
+            } else {
+              if (this.formFee.type2 == 5) {
+                let times = 0;
+                for (const item of this.formFee.pers) {
+                  times += item.num;
+                }
+                if(this.formFee.num != times){
+                  this.$message.error("阶段次数和不等于总次数");
+                  return;
+                }
+              }
+              //提交表单
+              addService(
+                Object.assign(
+                  {},
+                  this.form,
+                  this.formFee,
+                  this.formSpread,
+                  this.majorObj
+                )
+              ).then(res => {
+                if(res > 0){
+                  this.$message.success('辅导发布成功');
+                  this.$router.push('/list/tutor');
+                }
+              });
+            }
+          });
+        }
+      });
     }
   },
   mounted() {
@@ -304,7 +350,7 @@ export default {
     if (w < 400) {
       this.labPosition = "top";
     }
-  },
+  }
   // created() {
   //   this.editorOption = quillRedefine({
   //     uploadConfig: {

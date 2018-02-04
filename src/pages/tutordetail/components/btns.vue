@@ -1,33 +1,35 @@
 <template>
   <div class="group">
     <ul>
+      <!-- 发布者 -->
       <template v-if="bean.is_me">
-        <li @click="handleTianjia">添加系列</li>
-        <li @click="handleBianJi">
-          <icon-svg iconClass="wechat"></icon-svg>
+        <li @click="handleAddSys">关联知识</li>
+        <li @click="handleEdit">
+          <icon-svg iconClass="edit"></icon-svg>
           <p>编辑</p>
         </li>
-        <li @click="handleXiaJia">
-          <icon-svg iconClass="wechat"></icon-svg>
-          <p>下架</p>
+        <li @click="handleUpOrDown">
+          <!-- 0:上架;3下架 -->
+          <icon-svg :iconClass="bean.status == 3 ? 'up': bean.status == 0 ?  'down' : 'question'"></icon-svg>
+          <p>{{bean.status == 3 ? "上架": bean.status == 0 ? "下架" : "???" }}</p>
         </li>
-        <li @click="handleTuiGuan">
-          <icon-svg iconClass="wechat"></icon-svg>
-          <p>推广</p>
+        <li @click="handleSetPush">
+          <icon-svg iconClass="push"></icon-svg>
+          <p>{{ bean.is_extended == 1 ? "取消推广":"设置推广"}}</p>
         </li>
       </template>
+      <!-- 不是发布者 -->
       <template v-else>
-        <li v-if="bean.is_teacher || (!bean.is_teacher && bean.is_pay)" @click="handleShangKe">上课</li>
-        <li v-else @click="handleBaoMing">报名</li>
-        <li @click="handleZhiXun">
-          <icon-svg iconClass="telephone"></icon-svg>
-          <p>咨询</p>
-        </li>
-        <li @click="handleTiWen">
+        <li @click="handleBuy">购买</li>
+        <li @click="handleAsk">
           <icon-svg iconClass="question"></icon-svg>
           <p>提问</p>
         </li>
-        <li @click="handleTuiGuan">
+        <li @click="handleCard">
+          <icon-svg iconClass="telephone"></icon-svg>
+          <p>打卡</p>
+        </li>
+        <li @click="handlePush">
           <icon-svg iconClass="push"></icon-svg>
           <p>推广</p>
         </li>
@@ -68,6 +70,8 @@
 
 <script>
 import { liveapply, livepay, ispayed, checkpw } from "@/api/livevideo";
+import { tutorupordown, setextend } from "@/api/service";
+
 import md5 from "js-md5";
 export default {
   props: {
@@ -79,39 +83,60 @@ export default {
     handleShangKe() {
       this.$message.error("shangke todo");
     },
-    handleBaoMing() {
-      if (this.bean.price > 0) {
-        this.dialogPay = true;
-      } else {
-        let p = {
-          open_class_id: this.bean.open_class_id
-        };
-        liveapply(p).then(res => {
-          this.$message.success("报名成功");
-          this.bean.is_pay = 1;
-        });
-      }
+    handleBuy() {
+      this.$message.error("购买 todo");
+      // if (this.bean.price > 0) {
+      //   this.dialogPay = true;
+      // } else {
+      //   let p = {
+      //     open_class_id: this.bean.open_class_id
+      //   };
+      //   liveapply(p).then(res => {
+      //     this.$message.success("报名成功");
+      //     this.bean.is_pay = 1;
+      //   });
+      // }
     },
-    handleZhiXun() {
-      this.$message.error("zhixun todo");
+    handleCard() {
+      this.$message.error("打卡 todo");
     },
-    handleTiWen() {
-      this.$message.error("tiwen todo");
+    handleAsk() {
+      this.$message.error("提问 todo");
     },
-    handleTuiGuan() {
-      this.$message.error("tuiguan todo");
+    handlePush() {
+      this.$message.error("推广 todo");
     },
-    handleTianjia() {
-      this.$message.error("Tianjia todo");
+    handleAddSys() {
+      this.$message.error("关联知识体系 todo");
     },
-    handleBianJi() {
-      this.$router.push({name: 'EditLiveVideo', params:{id: this.bean.open_class_id}});
+    handleEdit() {
+      this.$message.error("编辑 todo");
+      // this.$router.push({name: 'EditTutor', params:{id: this.service_id}});
     },
-    handleXiaJia() {
-      this.$message.error("XiaJia todo");
+    handleUpOrDown() {
+      // this.$message.error("上下架 todo");
+      let p = { id: this.bean.service_id };
+      tutorupordown(p).then(res => {
+        this.bean.status = res.status;
+        if(res.status == 0){
+          this.$message.success("上架成功");
+        }
+        if(res.status == 3){
+          this.$message.success("下架成功");
+        }
+      });
     },
-    handleTuiGuan() {
-      this.$message.error("TuiGuang todo");
+    handleSetPush() {
+      let p = { id: this.bean.service_id, type: 2};
+      setextend(p).then( res => {
+        this.bean.is_extended = res.is_extended;
+        if(res.is_extended == 0){
+          this.$message.success("推广已取消");
+        }
+        if(res.is_extended == 1){
+          this.$message.success("已设置推广");
+        }
+      })
     },
     handleComitPay() {
       //首先输入支付密码
@@ -151,23 +176,23 @@ export default {
       let p = { paypassword: md5(this.form.pw) };
       checkpw(p).then(res => {
         if (res.status == 1) {
-          this.form.pw = '';
+          this.form.pw = "";
           let p = {
             open_class_id: this.bean.open_class_id,
             pay_type: 2
           };
-          livepay(p).then( res => {
-            if(res.status){
+          livepay(p).then(res => {
+            if (res.status) {
               this.$message.success("微信支付成功");
               this.dialogRestPay = false;
               this.dialogPay = false;
               this.$root.reload();
             }
-          })
-        } else if(res.status == 0){
+          });
+        } else if (res.status == 0) {
           this.$message.error("密码输入错误 重新输入");
-          this.form.pw = '';
-        } else if(res.status == 2){
+          this.form.pw = "";
+        } else if (res.status == 2) {
           this.$message.error("没有设置支付密码");
         }
       });

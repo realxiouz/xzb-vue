@@ -20,9 +20,27 @@ import LVChapter from '@/pages/livevideodetail/components/chapter';
 import LVBooks from '@/pages/livevideodetail/components/books';
 import LVPost from '@/pages/livevideodetail/components/post';
 
+//辅导详情
+import Tutor from '@/pages/tutordetail/tutor';
+import TutorDetail from '@/pages/tutordetail/components/detail';
+import TutorClass from '@/pages/tutordetail/components/class';
+import TutorCourse from '@/pages/tutordetail/components/course';
+import TutorBook from '@/pages/tutordetail/components/books';
+import TutorChapter from '@/pages/tutordetail/components/chapter';
+// import LVDetail from '@/pages/livevideodetail/components/detail';
+// import LVDetail from '@/pages/livevideodetail/components/detail';
+
+//教学中心
+import TeachCenter from '@/pages/teachcenter/teachcenterlayout';
+
+import ClassManage from '@/pages/teachcenter/components/classmanage';
+// import ClassManage from '@/pages/teachcenter/components/classmanage';
+// import ClassManage from '@/pages/teachcenter/components/classmanage';
+
 //list
 import List from '@/pages/list/listlayout';
 import ListLiveVideo from '@/pages/list/components/livevideo';
+import ListTutor from '@/pages/list/components/tutor';
 
 //个人中心
 import UserCenter from '@/pages/usercenter/uclayout';
@@ -51,137 +69,185 @@ export default new Router({
             keepAlive: false,
         },
         children: [{
-                path: 'login',
-                component: Login
+            path: 'login',
+            component: Login
+        },
+        {
+            path: 'register',
+            component: Register
+        },
+        {
+            path: 'forgetpassword',
+            component: ForgetPW
+        },
+        //添加服务
+        {
+            path: 'addservice',
+            component: ServiceLO,
+            redirect: 'addservice/reference',
+            children: [{
+                path: 'reference',
+                name: "AddReference",
+                component: AddReference
+            }, {
+                path: 'tutor',
+                name: "AddTutor",
+                component: AddTutor
             },
             {
-                path: 'register',
-                component: Register
+                path: 'livevideo',
+                name: "AddLiveVideo",
+                component: AddLiveVideo
             },
             {
-                path: 'forgetpassword',
-                component: ForgetPW
+                path: 'package',
+                name: "AddPackage",
+                component: AddPackage
+            }
+            ]
+        },
+        //编辑服务
+        {
+            path: 'editservice',
+            component: EditLO,
+            // redirect: 'addservice/reference',
+            children: [
+                // {
+                //     path: 'reference',
+                //     name: "AddReference",
+                //     component: AddReference
+                // }, 
+                // {
+                //     path: 'tutor',
+                //     name: "AddTutor",
+                //     component: AddTutor
+                // },
+                {
+                    path: 'livevideo/:id',
+                    name: "EditLiveVideo",
+                    component: EditLiveVideo
+                },
+                // {
+                //     path: 'package',
+                //     name: "AddPackage",
+                //     component: AddPackage
+                // }
+            ]
+        },
+        //直播详情
+        {
+            path: 'livevideo/:id',
+            component: Livevideo,
+            name: 'Livevideo',
+            redirect: 'livevideo/:id/detail',
+            children: [{
+                path: 'detail',
+                component: LVDetail
             },
-            //添加服务
             {
-                path: 'addservice',
-                component: ServiceLO,
-                redirect: 'addservice/reference',
-                children: [{
-                        path: 'reference',
-                        name: "AddReference",
-                        component: AddReference
-                    }, {
-                        path: 'tutor',
-                        name: "AddTutor",
-                        component: AddTutor
-                    },
-                    {
-                        path: 'livevideo',
-                        name: "AddLiveVideo",
-                        component: AddLiveVideo
-                    },
-                    {
-                        path: 'package',
-                        name: "AddPackage",
-                        component: AddPackage
-                    }
-                ]
+                path: 'chapter',
+                component: LVChapter
             },
-            //编辑服务
             {
-                path: 'editservice',
-                component: EditLO,
-                // redirect: 'addservice/reference',
-                children: [
-                    // {
-                    //     path: 'reference',
-                    //     name: "AddReference",
-                    //     component: AddReference
-                    // }, 
-                    // {
-                    //     path: 'tutor',
-                    //     name: "AddTutor",
-                    //     component: AddTutor
-                    // },
-                    {
-                        path: 'livevideo/:id',
-                        name: "EditLiveVideo",
-                        component: EditLiveVideo
-                    },
-                    // {
-                    //     path: 'package',
-                    //     name: "AddPackage",
-                    //     component: AddPackage
-                    // }
-                ]
+                path: 'books',
+                component: LVBooks
             },
-            //直播详情
             {
-                path: 'livevideo/:id',
-                component: Livevideo,
-                name: 'Livevideo',
-                redirect: 'livevideo/:id/detail',
-                children: [{
-                        path: 'detail',
-                        component: LVDetail
-                    },
-                    {
-                        path: 'chapter',
-                        component: LVChapter
-                    },
-                    {
-                        path: 'books',
-                        component: LVBooks
-                    },
-                    {
-                        path: 'post',
-                        component: LVPost
-                    }
-                ]
+                path: 'post',
+                component: LVPost
+            }
+            ]
+        },
+        //辅导详情
+        {
+            path: 'tutor/:id',
+            component: Tutor,
+            name: 'Tutor',
+            redirect: 'tutor/:id/detail',
+            children: [{
+                path: 'detail',
+                component: TutorDetail
             },
-            //列表展示
             {
-                path: 'list',
-                component: List,
-                children: [{
+                path: 'class',
+                component: TutorClass
+            },
+            {
+                path: 'course',
+                component: TutorCourse
+            },
+            {
+                path: 'chapter',
+                component: TutorChapter
+            },
+            {
+                path: 'books',
+                component: TutorBook
+            }
+            ]
+        },
+        //教学中心
+        {
+            path: 'teachcenter/:id',
+            component: TeachCenter,
+            name: 'TeachCenter',
+            redirect: 'teachcenter/:id/classmanage',
+            children: [
+                {
+                    path: 'classmanage',
+                    component: ClassManage
+                },
+            ]
+        },
+        //列表展示
+        {
+            path: 'list',
+            component: List,
+            children: [
+                {
                     path: 'livevideo',
                     component: ListLiveVideo
-                }]
-            },
-            //个人中心
-            {
-                path: 'usercenter',
-                component: UserCenter,
-                children: [{
-                        component: Study,
-                        path: 'studying',
-                    },
-                    {
-                        component: Teach,
-                        path: 'teaching',
-                    }
-                ]
+                },
+                {
+                    path: 'tutor',
+                    component: ListTutor
+                }
 
+            ]
+        },
+        //个人中心
+        {
+            path: 'usercenter',
+            component: UserCenter,
+            children: [{
+                component: Study,
+                path: 'studying',
             },
-            //他人中心
             {
-                path: 'othercenter/:id',
-                component: OtherCenter,
-                name: 'OtherCenter',
-                redirect: 'othercenter/:id/livevideo',
-                children: [{
-                        component: OCLiveVideo,
-                        path: 'liveVideo',
-                    },
-                    // {
-                    //     component: Teach,
-                    //     path: 'teaching',
-                    // }
-                ]
-
+                component: Teach,
+                path: 'teaching',
             }
+            ]
+
+        },
+        //他人中心
+        {
+            path: 'othercenter/:id',
+            component: OtherCenter,
+            name: 'OtherCenter',
+            redirect: 'othercenter/:id/livevideo',
+            children: [{
+                component: OCLiveVideo,
+                path: 'liveVideo',
+            },
+                // {
+                //     component: Teach,
+                //     path: 'teaching',
+                // }
+            ]
+
+        }
         ],
-    }, ],
+    },],
     // mode: 'history',
 });

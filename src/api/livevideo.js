@@ -116,4 +116,8 @@ export const getCircleBySchool = p => fetch.get('/api/circle/schools', { params:
 export const getlivevideo = p => fetch.get('/api/openinfo', { params: p })
 
 //获取直播信息
-export const editlv = p => fetch.post('/api/liveedito', p)
+export const editlv = p => fetch.post('/api/liveedit', p)
+
+
+//根据关键字搜索圈子id
+export const circleserach = p => fetch.get('/api/circle/circleserach', { params: p })
