@@ -25,15 +25,15 @@
         <div class="class-master">
             <div class="title">
                 <span>班主任</span>
-                <el-button type="primary">+添加班主任</el-button>
+                <!-- <el-button type="primary">+添加班主任</el-button> -->
             </div>
             <div class="add-master">
                 <el-form :inline="true" :model="formMaster">
                     <el-form-item label="昵称">
-                        <el-input v-model="formMaster.nickname" placeholder="审批人"></el-input>
+                        <el-input v-model="formMaster.nickname" placeholder="昵称"></el-input>
                     </el-form-item>
                     <el-form-item label="手机">
-                        <el-input v-model="formMaster.phone" placeholder="审批人"></el-input>
+                        <el-input v-model="formMaster.phone" placeholder="手机"></el-input>
                     </el-form-item>
                     <el-form-item>
                         <el-button @click="handleAddMaster">添加</el-button>
@@ -53,7 +53,7 @@
                             <el-col :xs="24" :sm="24" :md="8" :lg="8" :xl="8">
                                 <el-button-group>
                                     <el-button type="primary" @click="handleDelMaster(item)">删除</el-button>
-                                    <el-button type="primary">权限
+                                    <el-button type="primary" @click="showDialogSetting(item)">权限
                                     </el-button>
                                 </el-button-group>
                             </el-col>
@@ -62,12 +62,41 @@
                 </ul>
             </div>
         </div>
+        <el-dialog title="设置权限" :visible.sync="dialogSetting" width="300px">
+            <el-form :model="formSetting">
+                <el-checkbox-group v-model="formSetting.authority">
+
+                    <el-form-item>
+                        <el-checkbox label="1">拟定学习规划</el-checkbox>
+                    </el-form-item>
+                    <el-form-item>
+                        <el-checkbox label="2">拟定上课计划</el-checkbox>
+                    </el-form-item>
+                    <el-form-item>
+                        <el-checkbox label="3">拟定课前预习计划</el-checkbox>
+                    </el-form-item>
+                    <el-form-item>
+                        <el-checkbox label="4">拟定课后练习</el-checkbox>
+                    </el-form-item>
+                </el-checkbox-group>
+            </el-form>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="dialogSetting = false">取 消</el-button>
+                <el-button type="primary" @click="handleSetAuthority">确 定</el-button>
+            </span>
+        </el-dialog>
     </div>
 </template>
 
 <script>
 import { mapState } from "vuex";
-import { classinfo, classset, addmaster, delmaster } from "@/api/service";
+import {
+  classinfo,
+  classset,
+  addmaster,
+  delmaster,
+  setmasterauth
+} from "@/api/service";
 export default {
   computed: {
     ...mapState(["classId"])
@@ -75,11 +104,7 @@ export default {
   watch: {
     classId: {
       handler: function(val) {
-        let p = { id: val };
-        classinfo(p).then(res => {
-          this.formClass = res.classinfo;
-          this.advisers = res.advisers;
-        });
+        this.getClassInfo(val);
       },
       immediate: true
     }
@@ -88,7 +113,10 @@ export default {
     return {
       formClass: {},
       formMaster: {},
-      advisers: []
+      advisers: [],
+      dialogSetting: false,
+      formSetting: { authority: [] },
+      master: ""
     };
   },
   methods: {
@@ -104,14 +132,46 @@ export default {
           class_id: this.classId
         })
       ).then(res => {
-        console.log(res);
+        let p = { id: this.classId };
+        classinfo(p).then(res => {
+          this.formClass = res.classinfo;
+          this.advisers = res.advisers;
+          this.$message.success("班主任添加成功");
+        });
       });
     },
-    handleDelMaster(item){
-        let p ={id: item.id};
-        delmaster(p).then( res => {
-            console.log(res)
-        })
+    handleDelMaster(item) {
+      let p = { id: item.id };
+      delmaster(p).then(res => {
+        this.getClassInfo(this.classId);
+        this.$message.success("班主任已删除");
+      });
+    },
+    showDialogSetting(item) {
+      this.formSetting.authority = item.authority;
+      this.master = item;
+      this.dialogSetting = true;
+    },
+    handleSetAuthority() {
+      let p = { authority: this.formSetting.authority, id: this.master.id };
+      setmasterauth(p).then(res => {
+        this.getClassInfo(this.classId);
+        this.$message.success("权限修改完毕");
+        this.dialogSetting = false;
+      });
+    },
+    getClassInfo(id) {
+      let p = { id };
+      classinfo(p).then(res => {
+        this.formClass.is_default = res.classinfo.is_default;
+        this.formClass.name = res.classinfo.name;
+        this.formClass.num = res.classinfo.num;
+        this.formClass.auto_sendplan = res.classinfo.auto_sendplan == 1 ? true : false;
+        this.formClass.auto_sendscheme = res.classinfo.auto_sendscheme == 1 ? true : false;
+
+
+        this.advisers = res.advisers;
+      });
     }
   }
 };

@@ -96,6 +96,7 @@ export default {
             encodeURIComponent(res.url) +
             "&token=token&ts=ts";
           window.open(url);
+          this.dialogDown = true;
         }
       });
     }

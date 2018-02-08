@@ -15,6 +15,7 @@ const state = {
     showRegDialog: false,
     showLogDialog: false,
     classId: 0, //班级id
+    periodId:0, //选择阶段
 }
 
 export default new Vuex.Store({

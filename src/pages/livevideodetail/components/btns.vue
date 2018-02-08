@@ -4,7 +4,7 @@
       <template v-if="bean.is_me">
         <li @click="handleTianjia">添加系列</li>
         <li @click="handleBianJi">
-          <icon-svg iconClass="wechat"></icon-svg>
+          <icon-svg iconClass="edit"></icon-svg>
           <p>编辑</p>
         </li>
         <li @click="handleXiaJia">

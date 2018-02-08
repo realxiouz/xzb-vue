@@ -34,8 +34,8 @@ import TutorChapter from '@/pages/tutordetail/components/chapter';
 import TeachCenter from '@/pages/teachcenter/teachcenterlayout';
 
 import ClassManage from '@/pages/teachcenter/components/classmanage';
-// import ClassManage from '@/pages/teachcenter/components/classmanage';
-// import ClassManage from '@/pages/teachcenter/components/classmanage';
+import StudentManage from '@/pages/teachcenter/components/studentmanage';
+import Plan from '@/pages/teachcenter/components/plan';
 
 //list
 import List from '@/pages/list/listlayout';
@@ -196,6 +196,14 @@ export default new Router({
                 {
                     path: 'classmanage',
                     component: ClassManage
+                },
+                {
+                    path: 'studentmanage',
+                    component: StudentManage
+                },
+                {
+                    path: 'plan',
+                    component: Plan
                 },
             ]
         },

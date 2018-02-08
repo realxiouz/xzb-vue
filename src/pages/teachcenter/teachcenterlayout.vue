@@ -5,7 +5,7 @@
             <el-row :gutter="40">
                 <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
                     <div class="side">
-                        <side-panel></side-panel>
+                        <side-panel :type="sideType"></side-panel>
                     </div>
                 </el-col>
                 <el-col :xs="24" :sm="24" :md="18" :lg="18" :xl="18">
@@ -13,7 +13,7 @@
                         <el-menu mode="horizontal" :router="true" :default-active="currentRoute" style="margin-bottom:10px;">
                             <el-menu-item index="classmanage">班级管理</el-menu-item>
                             <el-menu-item index="studentmanage">学员管理</el-menu-item>
-                            <el-menu-item index="course">上课计划</el-menu-item>
+                            <el-menu-item index="plan">上课计划</el-menu-item>
                             <el-menu-item index="chapter">提问交流</el-menu-item>
                         </el-menu>
                         <router-view></router-view>
@@ -36,7 +36,8 @@ export default {
   data() {
     return {
       id: "",
-      currentRoute:""
+      currentRoute:"",
+      sideType:0
     };
   },
   created() {
@@ -45,7 +46,20 @@ export default {
       this.$route.path.split("/").length - 1
     ];
   },
-  mounted() {}
+  watch:{
+    "$route.path": function() {
+      this.currentRoute = this.$route.path.split("/")[
+        this.$route.path.split("/").length - 1
+      ];
+    },
+    currentRoute(val){
+        if(val === 'plan'){
+            this.sideType = 2;
+        } else {
+            this.sideType = 1;
+        }
+    }
+  }
 };
 </script>
 

@@ -6,7 +6,8 @@ import {
     SET_CART_COUNT,
     SET_REG_DIALOG,
     SET_LOG_DIALOG,
-    SET_CLASS_ID,    
+    SET_CLASS_ID,
+    SET_PERIOD_ID    
 } from './mutation-types.js'
 
 // import {setStore, getStore} from '../config/mUtils'
@@ -62,5 +63,8 @@ export default {
     //
     [SET_CLASS_ID](state, id) {
         state.classId = id;
+    },
+    [SET_PERIOD_ID](state, id) {
+        state.periodId = id;
     },
 }

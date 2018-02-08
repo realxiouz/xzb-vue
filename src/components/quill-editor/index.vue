@@ -1,6 +1,6 @@
 <template>
     <div>
-        <quill-editor v-model="bindData" :options="editorOption" :disabled="!editAble"></quill-editor>
+        <quill-editor ref="editor" :options="editorOption" :disabled="!editAble" :content="content" @change="onEditorChange($event)"></quill-editor>
     </div>
 </template>
 
@@ -8,13 +8,16 @@
 import { quillRedefine } from "vue-quill-editor-upload";
 export default {
   props: {
-      bindData: {
-          type: String
-      },
-      editAble:{
-          type: Boolean,
-          default: true
-      }
+    bindData: {
+      type: String
+    },
+    editAble: {
+      type: Boolean,
+      default: true
+    },
+    initData: {
+      type: String
+    },
   },
   created() {
     this.editorOption = quillRedefine({
@@ -25,11 +28,21 @@ export default {
         }
       }
     });
+    this.content = this.initData;
+    this.$emit('editorData', this.initData)
+    // this.$refs.editor.change();
   },
-  data(){
-      return {
-          editorOption:{}
-      }
+  data() {
+    return {
+      editorOption: {},
+      content:""
+    };
+  },
+  methods: {
+    onEditorChange({ quill, html, text }) {
+      this.content = html;
+      this.$emit('editorData', html)
+    }
   }
 };
 </script>
