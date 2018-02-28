@@ -19,7 +19,7 @@
     <div class="programs">
       <div>
         <span>教学方案</span>
-        <el-button @click="handleShowAddProgram">+添加教学方案</el-button>
+        <el-button @click="handleShowAddProgram" v-if="programAuth">+添加教学方案</el-button>
       </div>
       <ul>
         <li v-for=" item in programs" :key="item.id">
@@ -32,8 +32,8 @@
               {{item.add_time}}
             </div>
             <div class="act">
-              <el-button type="text" @click="handleEditProgram(item)">编辑</el-button>
-              <el-button type="text" @click="handleDelProgram(item)">删除</el-button>
+              <el-button type="text" @click="handleEditProgram(item)" v-if="programAuth">编辑</el-button>
+              <el-button type="text" @click="handleDelProgram(item)" v-if="programAuth">删除</el-button>
               <el-button type="primary" @click="handleSendToClass(item)" :disabled="item.status == 0">{{item.status == 0 ? '修订中' : '发送到班级'}}</el-button>
             </div>
           </div>
@@ -49,7 +49,7 @@
     <div class="plans">
       <div>
         <span>上课计划</span>
-        <el-button @click="handleAddPlan">+添加上课计划</el-button>
+        <el-button @click="handleAddPlan" v-if="planAuth">+添加上课计划</el-button>
       </div>
       <div class="choose-type">
         <ul>
@@ -64,13 +64,13 @@
           </li>
         </ul>
       </div>
-      <div class="choose-class">
+      <!-- <div class="choose-class">
         <ul>
           <li v-for="item in classes" :key="item.id">
             <span :class="{active : item.id == classid}" @click="classid=item.id">{{item.name}}</span>
           </li>
         </ul>
-      </div>
+      </div> -->
       <div class="choose-sort">
         <div class="time">
           <span :class="{active : true}" @click="handleTimeSort">日期
@@ -202,13 +202,21 @@ import qEditor from "@/components/quill-editor";
 import PlanItem from "./planitem";
 export default {
   computed: {
-    ...mapState(["periodId", "classes"]),
+    ...mapState(["periodId", "classes", "classId"]),
     plansParam() {
       return {
         id: this.$route.params.id,
         usertype: this.usertype,
-        classid: this.classid,
+        classid: this.classId,
         sort: this.sort
+      };
+    },
+    //班主任班级不同 权限不同
+    programsParam() {
+      return {
+        id: this.$route.params.id,
+        type: 2,
+        clsid: this.classId,
       };
     }
   },
@@ -226,6 +234,11 @@ export default {
       handler: function(val) {
         this.getPlans();
       }
+    },
+    programsParam:{
+      handler: function(val) {
+        this.getPrograms();
+      }
     }
   },
   methods: {
@@ -233,12 +246,12 @@ export default {
       //阶段信息
       this.getPeriod(id);
       //教学方案
-      this.getPrograms(id);
+      this.getPrograms();
       //教学计划
       this.getPlans();
     },
-    getPrograms(id) {
-      programs({ id: this.$route.params.id, type: 2, lnid: id }).then(res => {
+    getPrograms() {
+      programs(Object.assign({}, this.programsParam, { lnid: this.periodId })).then(res => {
         this.programs = res;
       });
     },
@@ -250,7 +263,7 @@ export default {
       });
     },
     getPlans() {
-      if (this.classid > 0) {
+      if (this.classId > 0) {
         plans(Object.assign({}, this.plansParam, { lnid: this.periodId })).then(
           res => {
             this.plans = res.plans;
@@ -318,7 +331,7 @@ export default {
       }
       delprogram({ id: item.id }).then(res => {
         this.$message.success("已删除");
-        this.getPrograms(this.periodId);
+        this.getPrograms();
       });
     },
     submmitSendPrograms() {
@@ -327,7 +340,7 @@ export default {
           res => {
             this.$message.success("发送完毕");
             this.dialogChooseClass = false;
-            this.getPrograms(this.periodId);
+            this.getPrograms();
           }
         );
       } else if (this.sendType === 2) {
@@ -376,7 +389,7 @@ export default {
         ).then(res => {
           this.dialogProgram = false;
           this.$message.success("方案添加成功");
-          this.getPrograms(this.periodId);
+          this.getPrograms();
         });
       } else {
         editprogram(
@@ -387,7 +400,7 @@ export default {
         ).then(res => {
           this.dialogProgram = false;
           this.$message.success("方案编辑成功");
-          this.getPrograms(this.periodId);
+          this.getPrograms();
         });
       }
     },
@@ -408,6 +421,12 @@ export default {
       this.dialogPlan = true;
     },
     handleEditPlan(item) {
+      //班主任没有权限 添加(02-23)
+      if(!this.planAuth){
+        this.$message.error('没有此权限');
+        return;
+      }
+
       this.isAddPlan = false;
 
       this.formPlan = {
@@ -427,19 +446,6 @@ export default {
       this.imgList = [];
       this.attachListPlan = [];
       this.initFormPlan = item.content_course;
-
-      // this.formPlan.open_class_id = item.open_class_id;
-      // this.formPlan.description = item.description;
-      // this.formPlan.content_course = item.content_course;
-      // this.formPlan.open_class_time = new Date(item.open_class_time);
-      // this.formPlan.class_hour = item.class_hour;
-      // this.formPlan.teacher = item.nickname;
-      // this.formPlan.image = item.image;
-      // this.formPlan.attach = item.attach;
-      // this.formPlan.live_id = item.live_id;
-      // this.formPlan.is_open = item.is_open == 1;
-      // this.formPlan.service_id = item.service_id;
-      // this.formPlan.learning_periods_id = item.learning_periods_id;
 
       if (item.attach) {
         this.attachListPlan.push({
@@ -529,6 +535,10 @@ export default {
       this.dialogChooseClass = true;
     },
     handleDelPlan(id) {
+      if(!this.planAuth){
+        this.$message.error('没有此权限');
+        return;
+      }
       delplan({ id }).then(res => {
         this.$message.success("课程已删除");
         this.getPlans();
@@ -576,7 +586,7 @@ export default {
         }
       },
       usertype: 1,
-      classid: 0,
+      // classid: 0,
       sort: "datedown",
 
       sendType: 1,
@@ -594,8 +604,18 @@ export default {
     PlanItem
   },
   mounted() {
-    this.classid = this.classes[0].id;
+    // this.classid = this.classes[0].id;
   },
+  props:{
+    planAuth:{
+      type: Boolean,
+      default: true
+    },
+    programAuth:{
+      type: Boolean,
+      default: true
+    },
+  }
 };
 </script>
 

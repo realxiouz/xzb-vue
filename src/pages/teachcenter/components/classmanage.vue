@@ -12,10 +12,21 @@
                     <el-input v-model.number="formClass.num" :disabled="formClass.is_default == 1" :max="500"></el-input>
                 </el-form-item>
                 <el-form-item>
+                    <el-checkbox v-model="formClass.is_open">开放班级报名,截止报名日期:</el-checkbox>
+                    <el-date-picker v-model="formClass.end_time" type="datetime" placeholder="选择日期时间" v-if="formClass.is_open">
+                    </el-date-picker>
+                </el-form-item>
+                <el-form-item>
                     <el-checkbox v-model="formClass.auto_sendplan">自动通知学员上课计划</el-checkbox>
                 </el-form-item>
                 <el-form-item>
                     <el-checkbox v-model="formClass.auto_sendscheme">自动发送学习方案给学员</el-checkbox>
+                </el-form-item>
+                <el-form-item>
+                    <el-checkbox v-model="formClass.is_rate">设置班主任的提成比例</el-checkbox>
+                    <el-input v-model.number="formClass.adviser_percentage" :max="100" v-if="formClass.is_rate" style="width:100px">
+                        <template slot="append">%</template>
+                    </el-input>
                 </el-form-item>
                 <el-form-item>
                     <el-button type="primary" @click="handleSaveClass">保存</el-button>
@@ -65,7 +76,6 @@
         <el-dialog title="设置权限" :visible.sync="dialogSetting" width="300px">
             <el-form :model="formSetting">
                 <el-checkbox-group v-model="formSetting.authority">
-
                     <el-form-item>
                         <el-checkbox label="1">拟定学习规划</el-checkbox>
                     </el-form-item>
@@ -121,23 +131,38 @@ export default {
   },
   methods: {
     handleSaveClass() {
-      classset().then(res => {
-        console.log(res);
+      let p = {
+        id: this.classId,
+        name: this.formClass.name,
+        num: this.formClass.num,
+        is_open: this.formClass.is_open,
+        auto_sendplan: this.formClass.auto_sendplan,
+        auto_sendscheme: this.formClass.auto_sendscheme,
+        end_time: this.formClass.end_time,
+        adviser_percentage: this.formClass.is_rate
+          ? this.formClass.adviser_percentage
+          : "0"
+      };
+      classset(p).then(res => {
+        this.getClassInfo(this.classId);
+        this.$message.success("班级设置完毕");
       });
     },
     handleAddMaster() {
       addmaster(
         Object.assign({}, this.formMaster, {
-          service_id: this.$parent.$route.params.id,
+          service_id: this.$route.params.id,
           class_id: this.classId
         })
       ).then(res => {
-        let p = { id: this.classId };
-        classinfo(p).then(res => {
-          this.formClass = res.classinfo;
-          this.advisers = res.advisers;
-          this.$message.success("班主任添加成功");
-        });
+        // let p = { id: this.classId };
+        // classinfo(p).then(res => {
+        //   this.formClass = res.classinfo;
+        //   this.advisers = res.advisers;
+        //   this.$message.success("班主任添加成功");
+        // });
+        this.getClassInfo(this.classId);
+        this.$message.success("班主任添加成功");
       });
     },
     handleDelMaster(item) {
@@ -163,13 +188,23 @@ export default {
     getClassInfo(id) {
       let p = { id };
       classinfo(p).then(res => {
-        this.formClass.is_default = res.classinfo.is_default;
-        this.formClass.name = res.classinfo.name;
-        this.formClass.num = res.classinfo.num;
-        this.formClass.auto_sendplan = res.classinfo.auto_sendplan == 1 ? true : false;
-        this.formClass.auto_sendscheme = res.classinfo.auto_sendscheme == 1 ? true : false;
-
-
+        //以此种方式生成对象,出来checkbox不能改变的bug(2018-02-11)
+        this.formClass = {
+          is_default: res.classinfo.is_default,
+          name: res.classinfo.name,
+          num: res.classinfo.num,
+          is_open: res.classinfo.is_open == 1,
+          end_time: res.classinfo.end_time == null ? new Date() : new Date(res.classinfo.end_time),
+          auto_sendplan: res.classinfo.auto_sendplan == 1,
+          auto_sendscheme: res.classinfo.auto_sendscheme == 1,
+          is_rate: res.classinfo.adviser_percentage > 0,
+          adviser_percentage: res.classinfo.adviser_percentage
+        };
+        // this.formClass.is_default = res.classinfo.is_default;
+        // this.formClass.name = res.classinfo.name;
+        // this.formClass.num = res.classinfo.num;
+        // this.formClass.auto_sendplan = res.classinfo.auto_sendplan == 1 ? true : false;
+        // this.formClass.auto_sendscheme = res.classinfo.auto_sendscheme == 1 ? true : false;
         this.advisers = res.advisers;
       });
     }

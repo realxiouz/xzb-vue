@@ -7,12 +7,16 @@ import {
     SET_REG_DIALOG,
     SET_LOG_DIALOG,
     SET_CLASS_ID,
-    SET_PERIOD_ID    
+    SET_PERIOD_ID,
+    SET_CLASSES,
+    SET_OS,
+    SET_RESPONSIVE_MODE,
+    SET_ADVISER_AUTHORITY,
+    SET_TUTOR_TYPE,
+    SET_ORDER_ID,
+    SET_TOP_TYPE,
+    SET_TYPE_ROUTES
 } from './mutation-types.js'
-
-// import {setStore, getStore} from '../config/mUtils'
-
-// import {localapi, proapi} from 'src/config/env'
 
 export default {
     // 记录用户信息
@@ -66,5 +70,29 @@ export default {
     },
     [SET_PERIOD_ID](state, id) {
         state.periodId = id;
+    },
+    [SET_CLASSES](state, classes) {
+        state.classes = classes;
+    },
+    [SET_OS](state, os) {
+        state.os = os;
+    },
+    [SET_RESPONSIVE_MODE](state, mode) {
+        state.responsiveMode = mode;
+    },
+    [SET_ADVISER_AUTHORITY](state, authority) {
+        state.adviserAuthority = authority;
+    },
+    [SET_TUTOR_TYPE](state, type) {
+        state.tutorType = type;
+    },
+    [SET_ORDER_ID](state, id) {
+        state.orderId = id;
+    },
+    [SET_TOP_TYPE](state, type) {
+        state.topType = type;
+    },
+    [SET_TYPE_ROUTES](state, routes) {
+        state.typeRoutes = routes;
     },
 }

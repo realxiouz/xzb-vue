@@ -41,7 +41,6 @@ export default {
       val.keywords !== oldVal.keywords ||
       val.sk !== oldVal.sk ||
       val.sort !== oldVal.sort ){
-        console.log(val);
         this.getData(val);
       }
       

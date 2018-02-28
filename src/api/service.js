@@ -44,7 +44,6 @@ fetch.interceptors.response.use(response => {
 */
 
 //创建服务
-// export const getlivevideo = p => fetch.get('/api/service/release', { params: p })
 export const addService = p => fetch.post('/api/service/release', p)
 
 //辅导列表
@@ -70,13 +69,20 @@ export const tutorbook = p => fetch.get('/api/servicebooks', { params: p })
 //根据阶段id查找课程计划
 export const tutorstagecourse = p => fetch.get('/api/service/stagecourse', { params: p })
 
-//辅导侧边栏发布者
+//辅导侧边栏---发布者
 export const tutorseller = p => fetch.get('/api/service/serviceseller', { params: p })
 
-//辅导侧边栏辅导老师
+//辅导侧边栏---主讲老师
 export const tutorteachers = p => fetch.get('/api/service/teachers', { params: p })
 
+//辅导侧边栏---班主任
+export const tutoradvs = p => fetch.get('/api/service/advs', { params: p })
 
+//辅导侧边栏---最新学员
+export const tutorstus = p => fetch.get('/api/service/servicenewstu', { params: p })
+
+//辅导侧边栏---班级群todo
+export const tutorcols = p => fetch.get('/api/service/servicenewstu', { params: p })
 
 //辅导上下架
 export const tutorupordown = p => fetch.put('/api/serviceStatus', p)
@@ -107,6 +113,8 @@ export const setmasterauth = p => fetch.post('/api/service/setadvauth', p)
 //教学中心班级信息
 export const getrole = p => fetch.get('/api/service/role', { params: p })
 
+//人数信息
+export const clsmembercount = p => fetch.get('/api/service/clsmembercount', { params: p })
 
 //高端班学员列表
 export const classstudent = p => fetch.get('/api/service/clsmembers', { params: p })
@@ -146,3 +154,58 @@ export const addprogram = p => fetch.post('/api/service/addprogram', p)
 
 //编辑教学方案
 export const editprogram = p => fetch.post('/api/service/editprogram', p)
+
+//班级列表
+export const classlist = p => fetch.get('/api/service/classeslist', { params: p })
+
+//添加课程计划
+export const addplan = p => fetch.post('/api/service/addplan', p)
+
+//发送课程直播
+export const sendplan = p => fetch.post('/api/service/sendplan', p)
+
+//删除课程
+export const delplan = p => fetch.delete('/api/service/deleteplan', { params: p })
+
+//编辑课程
+export const editplan = p => fetch.post('/api/service/editplan', p)
+
+//班主任信息
+export const clsadviser = p => fetch.get('/api/service/clsadviser', { params: p })
+
+//教学中心班主任列表
+export const advclasses = p => fetch.get('/api/service/advclasses', { params: p })
+
+//小班课 学员列表
+export const smallmembers = p => fetch.get('/api/service/smallmembers', { params: p })
+
+//小班课 课程列表
+export const smalllist = p => fetch.get('/api/service/smallplanlist', { params: p })
+
+//小班课 课程列表
+export const smallgroups = p => fetch.get('/api/service/smallgroups', { params: p })
+
+//一对一 学员列表
+export const onemembers = p => fetch.get('/api/service/onemembers', { params: p })
+
+//一对一 课程列表
+export const oneplanlist = p => fetch.get('/api/service/oneplanlist', { params: p })
+
+//教学中心-高端班 学员购买的阶段
+export const studyperiods = p => fetch.get('/api/service/studyperiods', { params: p })
+
+//教学中心-高端班 学员购买的阶段
+export const studycentre = p => fetch.get('/api/service/studycentre', { params: p })
+
+
+
+
+
+
+
+
+
+
+
+
+

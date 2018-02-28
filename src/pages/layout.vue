@@ -14,9 +14,10 @@ import PageFoot from "@/pages/footer";
 import Banner from "@/pages/bannerbar";
 import Dialogs from "@/pages/dialogs";
 
+import { detectOS } from "@/utilities/util";
 import { userinfo, unreadmsg, shoppingCart } from "@/api/log";
 import { mapMutations, mapState } from "vuex";
-//text api
+
 import { getlivevideo } from "@/api/livevideo";
 export default {
   name: "app",
@@ -25,6 +26,10 @@ export default {
     PageFoot,
     Banner,
     Dialogs
+  },
+  created(){
+    this.SET_OS(detectOS());
+    this.SET_RESPONSIVE_MODE( window.screen.width < 500);
   },
   mounted() {
     if (sessionStorage.getItem("token") && !this.login) {
@@ -50,17 +55,12 @@ export default {
         }
       });
     }
-
-    // let p = { id : 20};
-    // getlivevideo(p).then( res => {
-    //   console.log(res)
-    // })
   },
   computed: {
     ...mapState(["login"])
   },
   methods: {
-    ...mapMutations(["RECORD_USERINFO", "SET_MSG_COUNT", "SET_CART_COUNT"])
+    ...mapMutations(["RECORD_USERINFO", "SET_MSG_COUNT", "SET_CART_COUNT", "SET_OS", "SET_RESPONSIVE_MODE"])
   }
 };
 </script>

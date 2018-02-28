@@ -9,19 +9,19 @@
     </div>
     <div class="sel">
       <el-row>
-        <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
+        <!-- <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
           <el-select v-model="selPeriod" placeholder="请选择阶段">
             <el-option v-for="item in period" :key="item.id" :label="item.title" :value="item.id">
             </el-option>
           </el-select>
-        </el-col>
+        </el-col> -->
         <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
           <div class="end">
             <span class="num">该阶段有
               <span>{{maturedCount}}</span>
               名学员即将到期
             </span>
-            <el-button type="primary" @click="handleFee">跟进续费</el-button> 
+            <el-button type="primary" @click="handleFee">跟进续费</el-button>
           </div>
         </el-col>
       </el-row>
@@ -38,9 +38,9 @@
         </el-input>
       </div>
       <div class="stus">
-        <el-table ref="multipleTable" :data="students" tooltip-effect="dark" style="width: 100%" @selection-change="handleSelectionChange">
-          <el-table-column type="selection" width="55">
-          </el-table-column>
+        <el-table ref="multipleTable" :data="students" tooltip-effect="dark" style="width: 100%">
+          <!-- <el-table-column type="selection" width="55">
+          </el-table-column> -->
           <el-table-column label="头像" width="60">
             <template slot-scope="scope"><img :src="scope.row.avatar" alt="" class="avatar"></template>
           </el-table-column>
@@ -52,14 +52,14 @@
           <el-table-column prop="add_time" label="时间" show-overflow-tooltip>
           </el-table-column>
         </el-table>
-        <div class="change-class">
+        <!-- <div class="change-class">
           <span>更换班级至</span>
           <el-select v-model="selClass" placeholder="请选择班级">
             <el-option v-for="item in classes" :key="item.id" :label="item.name" :value="item.id">
             </el-option>
           </el-select>
           <el-button type="primary" @click="handleChangeClass" :disabled="selStus.length == 0 || selClass == ''">确定</el-button>
-        </div>
+        </div> -->
         <el-pagination small layout="total, prev, pager, next" :total="totalCount" @current-change="handleChangeCurrent">
         </el-pagination>
       </div>
@@ -89,21 +89,21 @@ import { mapState, mapMutations } from "vuex";
 import {
   classstudent,
   transedtudent,
-  periods,
-  transclasses,
-  changeclass,
+  // periods,
+  // transclasses,
+  // changeclass,
   clsmembercount
 } from "@/api/service";
 export default {
   computed: {
-    ...mapState(["classId"]),
+    ...mapState(["classId", "periodId"]),
     transedBean() {
-      return { lenid: this.selPeriod, clsid: this.classId };
+      return { lenid: this.periodId, clsid: this.classId };
     },
     studentBean() {
       return {
         clsid: this.classId,
-        lnid: this.selPeriod,
+        lnid: this.periodId,
         page: this.page,
         keywords: this.keywords,
         ktype: this.ktype
@@ -112,7 +112,7 @@ export default {
     transClassBean() {
       return {
         clsid: this.classId,
-        lnid: this.selPeriod,
+        lnid: this.periodId,
         id: this.$route.params.id
       };
     }
@@ -121,33 +121,37 @@ export default {
     transedBean: {
       handler: function(val) {
         if (val.lenid > 0) {
+          //转班学员列表
           transedtudent(val).then(res => {
             this.tranStudents = res.members;
           });
         }
-      }
+      },
+      immediate: true
     },
     studentBean: {
       handler: function(val) {
         if (val.lnid > 0) {
+          //班级学员列表
           classstudent(val).then(res => {
             this.students = res.members;
             this.totalCount = +res.count;
           });
         }
-      }
+      },
+      immediate: true
     },
-    transClassBean(val) {
-      if (val.lnid > 0) {
-        transclasses(val).then(res => {
-          this.classes = res.classes;
-        });
-
-        clsmembercount(val).then(res => {
-          this.praiseCount = res.praisecount;
-          this.maturedCount = res.maturedcount;
-        });
-      }
+    transClassBean: {
+      handler: function(val) {
+        if (val.lnid > 0) {
+          //预报名数量及到期数量
+          clsmembercount(val).then(res => {
+            this.praiseCount = res.praisecount;
+            this.maturedCount = res.maturedcount;
+          });
+        }
+      },
+      immediate: true
     },
     search(val) {
       if (val == "") {
@@ -160,16 +164,16 @@ export default {
       type: "",
       search: "",
 
-      period: [],
-      selPeriod: "",
+      // period: [],
+      // selPeriod: "",
       page: 1,
       keywords: "",
       ktype: "",
 
       students: [],
       selStus: [],
-      classes: [],
-      selClass: "",
+      // classes: [],
+      // selClass: "",
       tranStudents: [],
       totalCount: 0,
 
@@ -182,56 +186,56 @@ export default {
       this.$message.success("todo");
     },
     handleSearch() {
-      (this.ktype = this.type), (this.keywords = this.search);
+      this.ktype = this.type;
+      this.keywords = this.search;
     },
-    handleSelectionChange(val) {
-      this.selStus = [];
-      for (const item of val) {
-        this.selStus.push(item.member_id);
-      }
-    },
+    // handleSelectionChange(val) {
+    //   this.selStus = [];
+    //   for (const item of val) {
+    //     this.selStus.push(item.member_id);
+    //   }
+    // },
     handleChangeCurrent(val) {
       this.page = val;
     },
-    handleChangeClass() {
-      let p = {
-        learning_periods_id: this.selPeriod,
-        service_id: this.$route.params.id,
-        from_class_id: this.classId,
-        to_class_id: this.selClass,
-        members: this.selStus
-      };
-      changeclass(p).then(res => {
-        this.$message.success("转班成功");
-        // this.$root.reload();
-        this.selClass = "";
-        classstudent(this.studentBean).then(res => {
-          this.students = res.members;
-          this.totalCount = +res.count;
-        });
+    // handleChangeClass() {
+    //   let p = {
+    //     learning_periods_id: this.selPeriod,
+    //     service_id: this.$route.params.id,
+    //     from_class_id: this.classId,
+    //     to_class_id: this.selClass,
+    //     members: this.selStus
+    //   };
+    //   changeclass(p).then(res => {
+    //     this.$message.success("转班成功");
+    //     // this.$root.reload();
+    //     this.selClass = "";
+    //     classstudent(this.studentBean).then(res => {
+    //       this.students = res.members;
+    //       this.totalCount = +res.count;
+    //     });
 
-        transedtudent(this.transedBean).then(res => {
-          this.tranStudents = res.members;
-        });
-      });
-    },
-    handleFee(){
-      this.$message.error('todo');
+    //     transedtudent(this.transedBean).then(res => {
+    //       this.tranStudents = res.members;
+    //     });
+    //   });
+    // },
+    handleFee() {
+      this.$message.error("todo");
     }
   },
   mounted() {
-    let p = { id: this.$route.params.id };
-    periods(p).then(res => {
-      this.period = res.periods;
-      this.selPeriod = this.period[0].id;
-    });
+    // periods({ id: this.$route.params.id }).then(res => {
+    //   this.period = res.periods;
+    //   this.selPeriod = this.period[0].id;
+    // });
   }
 };
 </script>
 
 <style lang="scss" scoped>
-.sel{
-  .end{
+.sel {
+  .end {
     display: flex;
     justify-content: space-between;
   }

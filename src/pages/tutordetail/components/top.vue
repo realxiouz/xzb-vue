@@ -79,7 +79,9 @@
 <script>
 import { tutortop } from "@/api/service";
 import Btns from "./btns";
-import Share from "@/pages/livevideodetail/components//share";
+import Share from "@/pages/livevideodetail/components/share";
+
+import { mapMutations } from 'vuex';
 export default {
   data() {
     return {
@@ -99,11 +101,15 @@ export default {
     tutortop(p).then(res => {
       this.bean = res.service;
       this.promises = res.service.promises.split(',');
+      this.SET_TUTOR_TYPE(res.service.type2);
     });
   },
   components: {
     Btns,
     Share
+  },
+  methods:{
+    ...mapMutations(["SET_TUTOR_TYPE"]),
   }
 };
 </script>

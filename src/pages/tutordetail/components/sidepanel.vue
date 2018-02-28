@@ -1,78 +1,92 @@
 <template>
-    <div class="sidepanel">
-        <div class="head">
-            {{title}}
-        </div>
-        <div class="body">
-            <div class="publisher" v-if="panelType === 1">
-                <div class="user">
-                    <div class="img" @click="$router.push({ name:'OtherCenter', params:{id : publishBean.id}})">
-                        <img :src="publishBean.avatar" alt="publisheravatar">
-                    </div>
-                    <div class="info">
-                        <div class="nickname">{{publishBean.nickname}}</div>
-                        <div class="count">
-                            <div class="follow">关注:&nbsp;{{publishBean.follow_num}}</div>
-                            <div class="divider">|</div>
-                            <div class="fun">粉丝:&nbsp;{{publishBean.fans_num}}</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="action" v-if="!publishBean.is_me">
-                    <div class="tofollow" @click="handleFollow">{{publishBean.is_follow? "取消关注":"关注"}}</div>
-                    <a class="chat" target="_blank" :href="`/home_im_index_uid_${publishBean.id}.html`">私聊</a>
-                </div>
-            </div>
-            <div class="teacher" v-if="panelType === 2">
-                <div class="user">
-                    <div class="img">
-                        <img :src="teacherBean.avatar" alt="">
-                    </div>
-                    <div class="info">
-                        <div class="nickname">{{teacherBean.nickname}}</div>
-                        <div class="sign">{{teacherBean.friend_description ? teacherBean.friend_description : "Ta还没有签名呢"}}</div>
-                    </div>
-                </div>
-                <div class="description">
-                    {{teacherBean.identify_description ? teacherBean.identify_description : "该讲师暂无简介"}}
-                </div>
-                <div class="action">
-                    <el-button @click="$router.push({ name:'OtherCenter', params:{id : teacherBean.id}})">老师主页>></el-button>
-                </div>
-            </div>
-            <div class="students" v-if="panelType === 3">
-                <div class="all">
-                    <div v-for="stu in studentsBean" :key="stu.id" class="stu" v-if="studentsBean.length > 0">
-                        <div class="img" @click="$router.push({ name:'OtherCenter', params:{id : stu.id}})">
-                            <img :src="stu.avatar" alt="avatar">
-                        </div>
-                        <div class="nickname">{{stu.nickname}}</div>
-                    </div>
-                    <div class="nostu" v-if="studentsBean.length == 0">
-                        暂无学生加入该课程
-                    </div>
-                </div>
-                <div class="action">
-                    <el-button>更多>></el-button>
-                </div>
-            </div>
-        </div>
+  <div class="sidepanel">
+    <div class="head">
+      {{title}}
     </div>
+    <div class="body">
+      <div class="publisher" v-if="panelType === 1">
+        <div class="user">
+          <div class="img" @click="$router.push({ name:'OtherCenter', params:{id : publishBean.id}})">
+            <img :src="publishBean.avatar" alt="publisheravatar">
+          </div>
+          <div class="info">
+            <div class="nickname">{{publishBean.nickname}}</div>
+            <div class="count">
+              <div class="follow">关注:&nbsp;{{publishBean.follow_num}}</div>
+              <div class="divider">|</div>
+              <div class="fun">粉丝:&nbsp;{{publishBean.fans_num}}</div>
+            </div>
+          </div>
+        </div>
+        <div class="action" v-if="!publishBean.is_me">
+          <div class="tofollow" @click="handleFollow">{{publishBean.is_follow? "取消关注":"关注"}}</div>
+          <a class="chat" target="_blank" :href="`/home_im_index_uid_${publishBean.id}.html`">私聊</a>
+        </div>
+      </div>
+      <div class="teacher" v-if="panelType === 2" v-for="item in teachersBean" :key="item.id">
+        <div class="user">
+          <div class="img">
+            <img :src="item.avatar" alt="">
+          </div>
+          <div class="info">
+            <div class="nickname">{{item.nickname}}</div>
+            <div class="sign">{{item.friend_description ? item.friend_description : "Ta还没有签名呢"}}</div>
+          </div>
+        </div>
+        <div class="description">
+          {{item.identify_description ? item.identify_description : "该讲师暂无简介"}}
+        </div>
+        <div class="action">
+          <el-button @click="$router.push({ name:'OtherCenter', params:{id : item.id}})">老师主页>></el-button>
+        </div>
+      </div>
+      <div class="students" v-if="panelType === 3">
+        <div class="all">
+          <div v-for="stu in studentsBean" :key="stu.id" class="stu" v-if="studentsBean.length > 0">
+            <div class="img" @click="$router.push({ name:'OtherCenter', params:{id : stu.id}})">
+              <img :src="stu.avatar" alt="avatar">
+            </div>
+            <div class="nickname">{{stu.nickname}}</div>
+          </div>
+          <div class="nostu" v-if="studentsBean.length == 0">
+            暂无学生加入该课程
+          </div>
+        </div>
+        <div class="action">
+          <el-button>更多>></el-button>
+        </div>
+      </div>
+      <div class="advs" v-if="panelType === 5">
+        <div class="user" v-for="item in advsBean" :key="item.id">
+          <div class="img">
+            <img :src="item.avatar" alt="">
+          </div>
+          <div class="info">
+            <div class="nickname">{{item.nickname}}</div>
+            <div class="sign">{{item.friend_description ? item.friend_description : "Ta还没有签名呢"}}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
 import {
   tutorseller,
-  // actionfollow,
   tutorteachers,
-  // getstu
+  tutoradvs,
+  tutorstus,
+  tutorcols //班级群
 } from "@/api/service";
 export default {
   data() {
     return {
       publishBean: {},
-      teacherBean: {},
-      studentsBean: []
+      teachersBean: [],
+      studentsBean: [],
+      advsBean: [],
+      colsBean: []
     };
   },
   props: {
@@ -82,11 +96,11 @@ export default {
     },
     panelType: {
       type: Number,
-      default: 1
+      default: 1 //1:发布者 2:主讲者 3:最新学员 4:班级群 5:班主任
     },
     beanId: {
       type: String,
-      required: true,
+      required: true
     }
   },
   mounted() {
@@ -94,19 +108,28 @@ export default {
       id: this.beanId
     };
     if (this.panelType == 1) {
-        tutorseller(p).then(res => {
+      tutorseller(p).then(res => {
         this.publishBean = res;
       });
     }
     if (this.panelType == 2) {
       tutorteachers(p).then(res => {
-        this.teacherBean = res;
+        this.teachersBean = res;
       });
     }
     if (this.panelType == 3) {
-      getstu(p).then(res => {
+      tutorstus(p).then(res => {
         this.studentsBean = res;
-        // console.log(this.studentsBean);
+      });
+    }
+    if (this.panelType == 4) {
+      // tutorcols(p).then(res => {
+      //   this.colsBean = res;
+      // });
+    }
+    if (this.panelType == 5) {
+      tutoradvs(p).then(res => {
+        this.advsBean = res;
       });
     }
   },
@@ -124,9 +147,8 @@ export default {
       });
     }
   }
-};
+}
 </script>
-
 
 <style lang="scss" scoped>
 .sidepanel {
@@ -188,6 +210,7 @@ export default {
         }
       }
     }
+    .advs,
     .teacher {
       .user {
         display: flex;

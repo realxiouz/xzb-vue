@@ -2,7 +2,7 @@
     <div>
         <top :lvId="id"></top>
         <div class="content">
-            <el-row :gutter="40">
+            <el-row :gutter="20">
                 <el-col :xs="24" :sm="24" :md="18" :lg="18" :xl="18">
                     <div class="tabs">
                         <el-menu mode="horizontal" :router="true" :default-active="currentRoute" style="margin-bottom:10px;">
@@ -13,16 +13,22 @@
                             <el-menu-item index="books">图书</el-menu-item>
                             <el-menu-item index="question">提问</el-menu-item>
                             <el-menu-item index="evaluate">评价</el-menu-item>
-                            <el-menu-item :index="`/teachcenter/${id}`" v-if="role.is_me||role.is_adviser">教学中心</el-menu-item>
+                            <el-menu-item index="study" v-if="role.is_student">学习中心</el-menu-item>
+                            <el-menu-item :index="`/teachcenter/${id}`" v-if="role.is_me && tutorType == 5">教学中心</el-menu-item>
+                            <el-menu-item :index="`/teachcenteradviser/${id}`" v-if="!role.is_me && tutorType == 5 && role.is_adviser ">教学中心</el-menu-item>
+                            <el-menu-item :index="`/smallclass/${id}`" v-if="role.is_me && tutorType == 4">教学中心</el-menu-item>
+                            <el-menu-item :index="`/onetoone/${id}`" v-if="role.is_me && tutorType == 3">教学中心</el-menu-item>                             
                         </el-menu>
-                        <router-view></router-view>
+                        <router-view :type="+tutorType"></router-view>
                     </div>
                 </el-col>
                 <el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
                     <div class="side">
                         <side-panel :beanId="id"></side-panel>
                         <side-panel :beanId="id" :panelType="2" title="主讲老师"></side-panel>
-                        <!-- <side-panel :beanId="id" :panelType="3" title="最新学员"></side-panel> -->
+                        <side-panel :beanId="id" :panelType="5" title="班主任"></side-panel>
+                        <side-panel :beanId="id" :panelType="4" title="班级群"></side-panel>
+                        <side-panel :beanId="id" :panelType="3" title="最新学员"></side-panel>                        
                     </div>
                 </el-col>
             </el-row>
@@ -35,6 +41,7 @@
 import Top from "@/pages/tutordetail/components/top";
 import SidePanel from "@/pages/tutordetail/components/sidepanel";
 import { getrole } from "@/api/service";
+import { mapState } from 'vuex';
 export default {
   components: {
     Top,
@@ -59,6 +66,9 @@ export default {
       // console.log(res)
       this.role = res;
     })
+  },
+  computed:{
+    ...mapState(["tutorType"]),
   }
 };
 </script>

@@ -30,6 +30,7 @@
 
 <script>
 import { tutorclass, turornewclass } from "@/api/service";
+import { mapMutations } from 'vuex';
 export default {
   data() {
     return {
@@ -47,6 +48,7 @@ export default {
     });
   },
   methods: {
+    ...mapMutations(["SET_CLASS_ID"]),
     handleAddClass() {
       this.dialogNewClass = true;
       this.classname = '';
@@ -70,7 +72,9 @@ export default {
       })
     },
     handleManageClass(item) {
-      this.$message.error(`管理 todo.id is ${item.id}`);
+      //设置班级id,跳转教学中心默认选中设置班级
+      this.SET_CLASS_ID(item.id);
+      this.$router.push({name:"ClassManage", params:{id: this.$route.params.id} });
     }
   }
 };

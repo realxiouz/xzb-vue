@@ -12,7 +12,13 @@ module.exports = {
         assetsPublicPath: '/',
         proxyTable: {
             '/api/': {
-                // target: 'http://192.168.0.199',
+                target: 'http://120.78.158.121/',
+                pathRewrite: {
+                    '^/': '',
+                },
+                changeOrigin: true,
+            },
+            '/admin/': {
                 target: 'http://120.78.158.121/',
                 pathRewrite: {
                     '^/': '',
@@ -20,20 +26,12 @@ module.exports = {
                 changeOrigin: true,
             },
             '/Ucenter/': {
-                // target: 'http://192.168.0.199',
                 target: 'http://120.78.158.121/',
                 pathRewrite: {
                     '^/': '',
                 },
                 changeOrigin: true,
-            },
-            // '/spgoc/': {
-            //     // target: 'http://192.168.2.114:8080',
-            //     target: 'http://localhost:8080',        
-            //     pathRewrite: {
-            //       '^/': ''
-            //     }
-            //   },
+            }
         },
 
         // Various Dev Server settings

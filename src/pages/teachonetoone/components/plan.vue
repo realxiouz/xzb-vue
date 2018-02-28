@@ -1,25 +1,9 @@
 <template>
   <div class="plan-wrapper">
-    <div class="title">该阶段共有&nbsp;
-      <span>{{inforBean.num}}</span>&nbsp;次课</div>
-    <div class="target">
-      <div>阶段目标</div>
-      <div class="content">
-        <el-row>
-          <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
-            {{inforBean.title}}
-          </el-col>
-          <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
-            <el-button type="text" @click="handleShowTargetEdit">编辑</el-button>
-            <el-button type="primary">发送至各班级</el-button>
-          </el-col>
-        </el-row>
-      </div>
-    </div>
     <div class="programs">
       <div>
         <span>教学方案</span>
-        <el-button @click="handleShowAddProgram">+添加教学方案</el-button>
+        <el-button @click="handleShowAddProgram" type="primary">+添加教学方案</el-button>
       </div>
       <ul>
         <li v-for=" item in programs" :key="item.id">
@@ -34,42 +18,16 @@
             <div class="act">
               <el-button type="text" @click="handleEditProgram(item)">编辑</el-button>
               <el-button type="text" @click="handleDelProgram(item)">删除</el-button>
-              <el-button type="primary" @click="handleSendToClass(item)" :disabled="item.status == 0">{{item.status == 0 ? '修订中' : '发送到班级'}}</el-button>
+              <el-button type="primary" @click="handleSendToClass(item)" :disabled="item.status == 0">{{item.status == 0 ? '修订中' : '发送给学员'}}</el-button>
             </div>
-          </div>
-          <div class="sended" v-if="item.sendedclasses.length > 0">
-            <div>已发送至以下班级:</div>
-            <ul>
-              <li v-for="bean in item.sendedclasses" :key="bean.id">{{bean.name}}</li>
-            </ul>
           </div>
         </li>
       </ul>
     </div>
     <div class="plans">
-      <div>
+      <div class="plan-title">
         <span>上课计划</span>
-        <el-button @click="handleAddPlan">+添加上课计划</el-button>
-      </div>
-      <div class="choose-type">
-        <ul>
-          <li>
-            <span :class="{active : usertype == 1}" @click="usertype=1">发布者</span>
-          </li>
-          <li>
-            <span :class="{active : usertype == 2}" @click="usertype=2">班主任</span>
-          </li>
-          <li>
-            <span :class="{active : usertype == 3}" @click="usertype=3">公开课</span>
-          </li>
-        </ul>
-      </div>
-      <div class="choose-class">
-        <ul>
-          <li v-for="item in classes" :key="item.id">
-            <span :class="{active : item.id == classid}" @click="classid=item.id">{{item.name}}</span>
-          </li>
-        </ul>
+        <el-button @click="handleAddPlan" type="primary">+添加上课计划</el-button>
       </div>
       <div class="choose-sort">
         <div class="time">
@@ -80,37 +38,6 @@
       </div>
       <plan-item v-for="item in plans" :key="item.open_class_id" :bean="item" @sendPlan="handleSendPlan" @delPlan="handleDelPlan" @editPlan="handleEditPlan"></plan-item>
     </div>
-    <!-- 阶段目标dialog -->
-    <el-dialog title="编辑阶段目标" :visible.sync="dialogTarget" :width=" window.screen.width < 500 ? '300px' : '600px'" v-if="dialogTarget">
-      <el-form :model="formTarget">
-        <el-form-item>
-          <el-input placeholder="目标标题" v-model="formTarget.title"></el-input>
-        </el-form-item>
-        <el-form-item>
-          <q-editor @editorData="handleData" :initData="initFormTarget"></q-editor>
-        </el-form-item>
-      </el-form>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="dialogTarget = false">取 消</el-button>
-        <el-button type="primary" @click="handleEditTarget">确 定</el-button>
-      </span>
-    </el-dialog>
-    <!-- 发送班级dialog -->
-    <el-dialog title="选择班级" :visible.sync="dialogChooseClass" :width=" window.screen.width < 500 ? '300px' : '600px'" v-if="dialogChooseClass">
-      <el-form>
-        <el-checkbox-group v-model="selClasses">
-          <el-form-item v-for="item in toBeSelClasses" :key="item.id">
-            <el-checkbox :label="item.id" :disabled="item.is_sended === 1 || item.sended_able === 0">
-              {{`${item.name} ${item.class_num && item.period_num ? `(${item.class_num}/${item.period_num})` : ''}`}}
-            </el-checkbox>
-          </el-form-item>
-        </el-checkbox-group>
-      </el-form>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="dialogChooseClass = false">取 消</el-button>
-        <el-button type="primary" @click="submmitSendPrograms">确 定</el-button>
-      </span>
-    </el-dialog>
     <!-- 教学方案添加 编辑 dialog -->
     <el-dialog title="教学方案" :visible.sync="dialogProgram" :width=" window.screen.width < 500 ? '300px' : '600px'" v-if="dialogProgram">
       <el-form :model="formProgram">
@@ -133,7 +60,6 @@
         <el-button type="primary" @click="submitProgram(1)">存为正式方案</el-button>
       </span>
     </el-dialog>
-
     <!-- 教学计划添加 编辑 dialog -->
     <el-dialog title="教学方案" :visible.sync="dialogPlan" :width=" window.screen.width < 500 ? '300px' : '600px'" v-if="dialogPlan">
       <el-form :model="formPlan">
@@ -181,12 +107,8 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
 import {
-  period,
   programs,
-  plans,
-  edittarget,
   sendprogram,
   delprogram,
   addprogram,
@@ -194,93 +116,60 @@ import {
   addplan,
   sendplan,
   delplan,
-  editplan
+  editplan,
+  oneplanlist
 } from "@/api/service";
 
 import { createroom } from "@/api/livevideo";
 import qEditor from "@/components/quill-editor";
 import PlanItem from "./planitem";
+
+import { mapState, mapMutations} from 'vuex';
 export default {
   computed: {
-    ...mapState(["periodId", "classes"]),
+    ...mapState(["orderId"]),
     plansParam() {
       return {
-        id: this.$route.params.id,
-        usertype: this.usertype,
-        classid: this.classid,
+        orderid: this.orderId,
         sort: this.sort
+      };
+    },
+    programsParam(){
+      return {
+        id: this.$route.params.id,
+        type:0,
+        orderid: this.orderId
       };
     }
   },
   watch: {
-    periodId: {
-      handler: function(val) {
-        //有阶段id才能获取阶段信息(2018-02-11)
-        if(val > 0){
-          this.getPeriodInfo(val);
-        }
-      },
-      immediate: true
+    plansParam(val){
+      this.getPlans();
     },
-    plansParam: {
-      handler: function(val) {
-        this.getPlans();
-      }
+    programsParam(){
+      this.getPrograms();
     }
   },
   methods: {
-    getPeriodInfo(id) {
-      //阶段信息
-      this.getPeriod(id);
-      //教学方案
-      this.getPrograms(id);
-      //教学计划
-      this.getPlans();
-    },
-    getPrograms(id) {
-      programs({ id: this.$route.params.id, type: 2, lnid: id }).then(res => {
+    getPrograms() {
+      programs( this.programsParam ).then(res => {
         this.programs = res;
       });
     },
-    getPeriod(id) {
-      period({ id }).then(res => {
-        this.inforBean = res;
-        this.formTarget.title = res.title;
-        this.initFormTarget = res.target;
-      });
-    },
     getPlans() {
-      if (this.classid > 0) {
-        plans(Object.assign({}, this.plansParam, { lnid: this.periodId })).then(
-          res => {
-            this.plans = res.plans;
-          }
-        );
-      }
-    },
-    handleShowTargetEdit() {
-      this.dialogTarget = true;
+      oneplanlist(this.plansParam).then(res => {
+          this.plans = res.plans;
+        }
+      );
     },
     handleSendToClass(item) {
+      if (item.is_sended == 1) {
+        this.$message.error("已发送过了");
+        return;
+      }
       this.sendType = 1;
-      this.selClasses = [];
-      this.toBeSelClasses = item.sendclasses;
       this.proId = item.id;
-      this.dialogChooseClass = true;
-    },
-    handleData(html) {
-      this.formTarget.target = html;
-    },
-    handleEditTarget() {
-      edittarget({
-        id: this.periodId,
-        title: this.formTarget.title,
-        target: this.formTarget.target
-      }).then(res => {
-        this.dialogTarget = false;
-        this.$message.success("目标编辑成功");
-        this.getPeriodInfo(this.periodId);
-      });
+      this.submmitSend();
     },
     handleShowAddProgram() {
       this.isAddProgram = true;
@@ -290,14 +179,9 @@ export default {
       this.dialogProgram = true;
     },
     handleEditProgram(item) {
-      if(!item.editable){
-        this.$message.error('不能编辑');
-        return;
-      }
       this.isAddProgram = false;
       this.formProgram.id = item.id;
       this.formProgram.title = item.title;
-      this.formProgram.learning_periods_id = item.learning_periods_id;
       this.initFormProgram = item.content;
       this.formProgram.attach = item.attach;
       if (item.attach) {
@@ -312,32 +196,28 @@ export default {
       this.dialogProgram = true;
     },
     handleDelProgram(item) {
-      if(!item.deleteable){
-        this.$message.error('不能删除');
-        return;
-      }
       delprogram({ id: item.id }).then(res => {
         this.$message.success("已删除");
-        this.getPrograms(this.periodId);
+        this.getPrograms();
       });
     },
-    submmitSendPrograms() {
+    submmitSend() {
       if (this.sendType === 1) {
-        sendprogram({ id: this.proId, type: 2, classes: this.selClasses }).then(
-          res => {
-            this.$message.success("发送完毕");
-            this.dialogChooseClass = false;
-            this.getPrograms(this.periodId);
-          }
-        );
-      } else if (this.sendType === 2) {
-        sendplan({
-          id: this.sendClassId,
-          type: 2,
-          classes: this.selClasses
+        sendprogram({
+          id: this.proId,
+          type: 0,
+          order_id: this.orderId
         }).then(res => {
           this.$message.success("发送完毕");
-          this.dialogChooseClass = false;
+          this.getPrograms();
+        });
+      } else if (this.sendType === 2) {
+        sendplan({
+          id: this.proId,
+          type: 0,
+          order_id: this.orderId
+        }).then(res => {
+          this.$message.success("发送完毕");
           this.getPlans();
         });
       }
@@ -369,25 +249,25 @@ export default {
       if (this.isAddProgram) {
         addprogram(
           Object.assign({}, this.formProgram, {
-            service_id: this.$route.params.id,
             status,
-            learning_periods_id: this.periodId
+            order_id: this.orderId,
+            service_id: this.$route.params.id,
           })
         ).then(res => {
           this.dialogProgram = false;
           this.$message.success("方案添加成功");
-          this.getPrograms(this.periodId);
+          this.getPrograms();
         });
       } else {
         editprogram(
           Object.assign({}, this.formProgram, {
+            status,
             service_id: this.$route.params.id,
-            status
           })
         ).then(res => {
           this.dialogProgram = false;
           this.$message.success("方案编辑成功");
-          this.getPrograms(this.periodId);
+          this.getPrograms();
         });
       }
     },
@@ -421,25 +301,13 @@ export default {
         attach: item.attach,
         live_id: item.live_id,
         service_id: item.service_id,
-        learning_periods_id: item.learning_periods_id,
-        is_open: item.is_open == 1
+        is_open: item.is_open == 1,
+
+        order_id: this.orderId
       };
       this.imgList = [];
       this.attachListPlan = [];
       this.initFormPlan = item.content_course;
-
-      // this.formPlan.open_class_id = item.open_class_id;
-      // this.formPlan.description = item.description;
-      // this.formPlan.content_course = item.content_course;
-      // this.formPlan.open_class_time = new Date(item.open_class_time);
-      // this.formPlan.class_hour = item.class_hour;
-      // this.formPlan.teacher = item.nickname;
-      // this.formPlan.image = item.image;
-      // this.formPlan.attach = item.attach;
-      // this.formPlan.live_id = item.live_id;
-      // this.formPlan.is_open = item.is_open == 1;
-      // this.formPlan.service_id = item.service_id;
-      // this.formPlan.learning_periods_id = item.learning_periods_id;
 
       if (item.attach) {
         this.attachListPlan.push({
@@ -473,7 +341,7 @@ export default {
         let p = Object.assign({}, this.formPlan, {
           live_id: this.liveId,
           service_id: this.$route.params.id,
-          learning_periods_id: this.periodId
+          order_id: this.orderId
         });
         addplan(p).then(res => {
           this.dialogPlan = false;
@@ -522,11 +390,9 @@ export default {
       }
     },
     handleSendPlan(item) {
-      this.selClasses = [];
       this.sendType = 2;
-      this.toBeSelClasses = item.sendclass;
-      this.sendClassId = item.open_class_id;
-      this.dialogChooseClass = true;
+      this.proId = item.open_class_id;
+      this.submmitSend();
     },
     handleDelPlan(id) {
       delplan({ id }).then(res => {
@@ -536,21 +402,13 @@ export default {
     },
     handlePlanData(html) {
       this.formPlan.content_course = html;
-    },
+    }
   },
   data() {
     return {
-      // inforBean: { num: 0, title: "" }, //信息
       programs: [], //方案
       plans: [], //计划
 
-      dialogTarget: false,
-      formTarget: {},
-      initFormTarget: "",
-
-      dialogChooseClass: false,
-      toBeSelClasses: [],
-      selClasses: [],
       proId: "",
 
       dialogProgram: false,
@@ -575,18 +433,14 @@ export default {
           return true;
         }
       },
-      usertype: 1,
-      classid: 0,
+
       sort: "datedown",
 
       sendType: 1,
-      sendClassId: 0,
 
       timeSort: 0,
       liveId: "",
-      window:window,
-
-      inforBean: { num: 0, title: "" } //信息
+      window: window,
     };
   },
   components: {
@@ -594,8 +448,9 @@ export default {
     PlanItem
   },
   mounted() {
-    this.classid = this.classes[0].id;
-  },
+    this.getPlans();
+    this.getPrograms();
+  }
 };
 </script>
 
@@ -615,16 +470,18 @@ export default {
     }
   }
 
-  .target {
-    background-color: #fff;
-    padding: 20px;
-  }
-
   .programs {
+    padding: 20px;
+    background-color: #fff;
     ul {
       > li {
+        border: 1px solid #ededed;
+        background-color: #f8f8f8;
+        margin-top: 10px;
+        padding: 10px 20px;
         .info {
           display: flex;
+          align-items: center;
           .img-name {
             img {
               width: 30px;
@@ -632,10 +489,9 @@ export default {
               border-radius: 50%;
             }
           }
-        }
-        .sended {
-          ul {
-            display: flex;
+          .time {
+            margin: 0 30px;
+            flex: 1;
           }
         }
       }
@@ -676,6 +532,12 @@ export default {
         }
       }
     }
+  }
+
+  .plan-title{
+    padding: 20px;
+    background-color: #fff;
+    margin: 10px 0;
   }
 }
 </style>

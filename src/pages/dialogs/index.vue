@@ -55,12 +55,12 @@
                         </el-form-item>
                     </div>
                     <el-form-item prop="pass">
-                        <el-input type='password' placeholder="请输入密码（8-20位字符）" v-model="regForm.pass">
+                        <el-input type='password' placeholder="请输入密码(8-12位字符)" v-model="regForm.pass" :maxlength="12">
                             <icon-svg slot="prefix" iconClass="lock"></icon-svg>
                         </el-input>
                     </el-form-item>
                     <el-form-item prop="repass">
-                        <el-input type='password' placeholder="确认密码" v-model="regForm.repass">
+                        <el-input type='password' placeholder="确认密码" v-model="regForm.repass" :maxlength="12">
                             <icon-svg slot="prefix" iconClass="pw"></icon-svg>
                         </el-input>
                     </el-form-item>
@@ -73,7 +73,6 @@
                 </el-form>
             </div>
         </el-dialog>
-
         <!-- login -->
         <el-dialog :show-close="false" :visible="showLogDialog" width="300px">
             <div class="closeDialog" @click="handleCloseLog">&times;</div>
@@ -190,6 +189,8 @@ export default {
     let validatePass = (rule, value, callback) => {
       if (value === "") {
         callback(new Error("请输入密码"));
+      } else if(value.length < 8) {
+        callback(new Error("密码最少八位"));
       } else {
         if (this.regForm.checkPass !== "") {
           this.$refs.regForm.validateField("repass");
@@ -278,9 +279,11 @@ export default {
             }
             register(p).then(res => {
               if (res.data.success) {
-                //
-                this.$message.success("注册成功");
-                this.dialogReg = false;
+                if(this.isEmailReg){
+                  this.$message.success("注册成功,请先去邮箱激活,才能登陆");
+                }
+                this.handleCloseReg();
+                this.SET_LOG_DIALOG(true);
               } else {
                 this.$message.error(res.data.message);
                 if (this.$refs.regCode) {

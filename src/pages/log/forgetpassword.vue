@@ -57,12 +57,12 @@
         </el-form>
         <el-form class="tabContainer" v-else :model='resetPWForm'  :rules='resetPWRule' ref='resetPWForm' status-icon>
           <el-form-item prop="pass">
-            <el-input type='password' placeholder="请输入密码（8-20位字符）" v-model="resetPWForm.pass">
+            <el-input type='password' placeholder="请输入密码(8-12位字符)" v-model="resetPWForm.pass" :maxlength="12">
               <icon-svg slot="prefix" iconClass="lock"></icon-svg>
             </el-input>
           </el-form-item>
           <el-form-item prop="repass">
-            <el-input type='password' placeholder="确认密码" v-model="resetPWForm.repass">
+            <el-input type='password' placeholder="确认密码" v-model="resetPWForm.repass" :maxlength="12">
               <icon-svg slot="prefix" iconClass="pw"></icon-svg>
             </el-input>
           </el-form-item>
@@ -133,6 +133,8 @@ export default {
     let validatePass = (rule, value, callback) => {
       if (value === "") {
         callback(new Error("请输入密码"));
+      }else if(value.length < 8) {
+        callback(new Error("密码最少八位"));
       } else {
         if (this.resetPWForm.checkPass !== "") {
           this.$refs.resetPWForm.validateField("repass");

@@ -53,7 +53,7 @@
                             </div>
                             <div class="searh1">
                                 <el-input placeholder="请输入内容" v-model="search1" size="small">
-                                    <el-select slot="prepend" placeholder="请选择" v-model="searchtype">
+                                    <el-select slot="prepend" placeholder="请选择" v-model="searchtype" style="width:100px;">
                                         <el-option label="搜内容" value="0"></el-option>
                                         <el-option label="搜昵称" value="1"></el-option>
                                     </el-select>
@@ -312,12 +312,16 @@ export default {
 }
 </style>
 
-<style>
+ <style lang="scss">
 /* inputgroup 前缀不现实修复 */
-.el-input.el-input--suffix {
-  width: 100px !important;
+.search1{
+  .el-input.el-input--suffix {
+    width: 100px !important;
+  }
 }
-</style>
+
+
+ </style>
 
 
 
